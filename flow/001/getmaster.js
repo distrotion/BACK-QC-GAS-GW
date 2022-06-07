@@ -3,11 +3,17 @@ const { kill } = require("nodemon/lib/monitor/run");
 const router = express.Router();
 let mongodb = require('../../function/mongodb');
 
+//----------------- DATABASE
+
+let MAIN_DATA = 'MAIN_DATA';
+let MAIN = 'MAIN';
+
 let PATTERN = 'PATTERN';
 let PATTERN_01 = 'PATTERN_01';
 let master_FN = 'master_FN';
+let ITEMs = 'ITEMs';
 let METHOD = 'METHOD';
-let MACHINE = 'MACHINE'
+let MACHINE = 'MACHINE';
 
 router.post('/getmaster', async (req, res) => {
   //-------------------------------------

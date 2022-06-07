@@ -115,3 +115,22 @@ module.exports = router;
 
 
 //$push: { "attachments": arr[0] }
+
+
+// request.post(
+//   'http://tp-portal.thaiparker.co.th/API_QcReport/ZBAPI_getZPPIN006_IN_BP_GAS',
+//   { json: {
+//       "PERNR_ID":"135026",
+//       "AUARTID":"ZGB1",
+//       "P_MATNR":`0000000000${input['MATNR'] }`,
+//       "P_CHARG":`${input['CHARG']}`,
+//       "P_BWART":"321"
+//   }
+
+// },
+//   function (error, response, body) {
+//       if (!error && response.statusCode == 200) {
+//           console.log(body);
+//       }
+//   }
+// );
