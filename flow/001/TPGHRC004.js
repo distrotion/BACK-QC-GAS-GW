@@ -52,6 +52,7 @@ let TPGHRC004db = {
   "PCSleft": "",
   "UNIT": "",
   "INTERSEC": "",
+  "RESULTFORMAT":"",
   "GRAPHTYPE": "",
   "preview": [],
   "confirmdata": [],
@@ -152,6 +153,7 @@ router.post('/GETINtoTPGHRC004', async (req, res) => {
         "PCSleft": "",
         "UNIT": "",
         "INTERSEC": "",
+        "RESULTFORMAT":"",
         "GRAPHTYPE": "",
         //----------------------
         "preview": [],
@@ -205,6 +207,7 @@ router.post('/TPGHRC004-geteachITEM', async (req, res) => {
     if (input['PO'] !== undefined && input['CP'] !== undefined && input['ITEMs'] !== undefined) {
       let findcp = await mongodb.find(PATTERN, PATTERN_01, { "CP": input['CP'] });
       let UNITdata = await mongodb.find(master_FN, UNIT, {});
+      let masterITEMs = await mongodb.find(master_FN, ITEMs, { "masterID": TPGHRC004db['inspectionItem'] });
 
       for (i = 0; i < findcp[0]['FINAL'].length; i++) {
         if (findcp[0]['FINAL'][i]['ITEMs'] === input['ITEMs']) {
@@ -224,6 +227,12 @@ router.post('/TPGHRC004-geteachITEM', async (req, res) => {
           //   "LOAD": findcp[0]['FINAL'][i]['LOAD'],
           //   "CONVERSE": findcp[0]['FINAL'][i]['CONVERSE'],
           // }]
+
+          if(masterITEMs.length>0){
+            //
+            TPGHRC004db["RESULTFORMAT"]= masterITEMs[0]['RESULTFORMAT']
+            TPGHRC004db["GRAPHTYPE"]= masterITEMs[0]['GRAPHTYPE']
+          }
 
           for (j = 0; j < UNITdata.length; j++) {
             if (findcp[0]['FINAL'][i]['UNIT'] == UNITdata[j]['masterID']) {
@@ -308,6 +317,8 @@ router.post('/TPGHRC004-confirmdata', async (req, res) => {
   let output = 'NOK';
   //-------------------------------------
   try {
+    let datapush = TPGHRC004db['preview'][0]
+
     TPGHRC004db['confirmdata'].push(...TPGHRC004db['preview']);
     TPGHRC004db['preview'] = [];
     // console.log(TPGHRC004db['confirmdata'])
@@ -449,6 +460,7 @@ router.post('/TPGHRC004-SETZERO', async (req, res) => {
       "PCSleft": "",
       "UNIT": "",
       "INTERSEC": "",
+      "RESULTFORMAT":"",
       "GRAPHTYPE": "",
       "preview": [],
       "confirmdata": [],
