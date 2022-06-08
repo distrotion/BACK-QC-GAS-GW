@@ -32,7 +32,7 @@ router.post('/getmaster', async (req, res) => {
   res.json(output);
 });
 
-router.post('/GETINSset',async (req,res) => {
+router.post('/GETINSset', async (req, res) => {
   //-------------------------------------
   console.log('--GETINSset--');
   console.log(req.body);
@@ -40,6 +40,7 @@ router.post('/GETINSset',async (req,res) => {
   //-------------------------------------
   let output = {};
   let findcp = [];
+  let findPO = [];
   let ITEMMETHODlist = [];
   let METHODmaster = [];
   let MACHINEmaster = [];
@@ -47,24 +48,25 @@ router.post('/GETINSset',async (req,res) => {
   let INSLISTans = [];
 
 
-  if ( input['CP'] !== undefined) {
-     findcp = await mongodb.find(PATTERN, PATTERN_01, {"CP":input['CP']});
+  if (input['CP'] !== undefined && input['PO'] !== undefined) {
+    findcp = await mongodb.find(PATTERN, PATTERN_01, { "CP": input['CP'] });
+    findPO = await mongodb.find(MAIN_DATA, MAIN, { "PO": input['PO'] });
   }
-  if(findcp.length>0){
-    if(findcp[0]['FINAL'] !== undefined && findcp[0]['FINAL'].length>0){
-      for(i=0;i<findcp[0]['FINAL'].length;i++){
-        ITEMMETHODlist.push({"ITEMs":findcp[0]['FINAL'][i]['ITEMs'],"METHOD":findcp[0]['FINAL'][i]['METHOD']})
+  if (findcp.length > 0 && findPO.length === 0) {
+    if (findcp[0]['FINAL'] !== undefined && findcp[0]['FINAL'].length > 0) {
+      for (i = 0; i < findcp[0]['FINAL'].length; i++) {
+        ITEMMETHODlist.push({ "ITEMs": findcp[0]['FINAL'][i]['ITEMs'], "METHOD": findcp[0]['FINAL'][i]['METHOD'] })
       }
 
       METHODmaster = await mongodb.find(master_FN, METHOD, {});
       MACHINEmaster = await mongodb.find(master_FN, MACHINE, {});
 
-      for(i=0;i<ITEMMETHODlist.length;i++){
-        for(j=0;j<METHODmaster.length;j++){
-          if(ITEMMETHODlist[i]['METHOD'] === METHODmaster[j]['METHOD']){
-            for(k = 0;k<MACHINEmaster.length;k++){
-              if(METHODmaster[j]['METHOD'] === MACHINEmaster[k]['masterID']){
-                if(MACHINEmaster[k]['MACHINE'].length>0){
+      for (i = 0; i < ITEMMETHODlist.length; i++) {
+        for (j = 0; j < METHODmaster.length; j++) {
+          if (ITEMMETHODlist[i]['METHOD'] === METHODmaster[j]['METHOD']) {
+            for (k = 0; k < MACHINEmaster.length; k++) {
+              if (METHODmaster[j]['METHOD'] === MACHINEmaster[k]['masterID']) {
+                if (MACHINEmaster[k]['MACHINE'].length > 0) {
                   INSLIST.push(...MACHINEmaster[k]['MACHINE']);
                 }
               }
@@ -74,11 +76,63 @@ router.post('/GETINSset',async (req,res) => {
       }
       INSLISTans = [...new Set(INSLIST)];
     }
+  } else {
+    try {
+
+      let CHECKlist = findPO[0]['CHECKlist'];
+      let CHECKlistnew = [];
+      MACHINEmaster = await mongodb.find(master_FN, MACHINE, {});
+
+      for (i = 0; i < CHECKlist.length; i++) {
+        if (CHECKlist[i]['FINISH'] === undefined) {
+          CHECKlistnew.push(CHECKlist[i]);
+        }
+      }
+      // console.log(CHECKlistnew);
+      for (i = 0; i < CHECKlistnew.length; i++) {
+        for (j = 0; j < MACHINEmaster.length; j++) {
+          if (CHECKlistnew[i]['METHOD'] === MACHINEmaster[j]['masterID']) {
+            if (MACHINEmaster[j]['MACHINE'].length > 0) {
+              INSLIST.push(...MACHINEmaster[j]['MACHINE']);
+            }
+          }
+        }
+      }
+
+      INSLISTans = [...new Set(INSLIST)];
+    }
+    catch (errin) {
+      if (findcp.length > 0) {
+        for (i = 0; i < findcp[0]['FINAL'].length; i++) {
+          ITEMMETHODlist.push({ "ITEMs": findcp[0]['FINAL'][i]['ITEMs'], "METHOD": findcp[0]['FINAL'][i]['METHOD'] })
+        }
+
+        METHODmaster = await mongodb.find(master_FN, METHOD, {});
+        MACHINEmaster = await mongodb.find(master_FN, MACHINE, {});
+
+        for (i = 0; i < ITEMMETHODlist.length; i++) {
+          for (j = 0; j < METHODmaster.length; j++) {
+            if (ITEMMETHODlist[i]['METHOD'] === METHODmaster[j]['METHOD']) {
+              for (k = 0; k < MACHINEmaster.length; k++) {
+                if (METHODmaster[j]['METHOD'] === MACHINEmaster[k]['masterID']) {
+                  if (MACHINEmaster[k]['MACHINE'].length > 0) {
+                    INSLIST.push(...MACHINEmaster[k]['MACHINE']);
+                  }
+                }
+              }
+            }
+          }
+        }
+        INSLISTans = [...new Set(INSLIST)];
+      }else{
+        INSLISTans = [];
+      }
+    }
   }
 
-    
+
   //-------------------------------------
-    res.json(INSLISTans);
+  res.json(INSLISTans);
 });
 
 //         "PO": "",

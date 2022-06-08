@@ -25,6 +25,7 @@ let master_FN = 'master_FN';
 let ITEMs = 'ITEMs';
 let METHOD = 'METHOD';
 let MACHINE = 'MACHINE';
+let UNIT = 'UNIT';
 
 //----------------- dynamic
 
@@ -51,6 +52,7 @@ let TPGHRC004db = {
   "PCSleft": "",
   "UNIT": "",
   "INTERSEC": "",
+  "GRAPHTYPE": "",
   "preview": [],
   "confirmdata": [],
   "ITEMleftUNIT": [],
@@ -150,6 +152,7 @@ router.post('/GETINtoTPGHRC004', async (req, res) => {
         "PCSleft": "",
         "UNIT": "",
         "INTERSEC": "",
+        "GRAPHTYPE": "",
         //----------------------
         "preview": [],
         "confirmdata": [],
@@ -201,6 +204,7 @@ router.post('/TPGHRC004-geteachITEM', async (req, res) => {
     //-------------------------------------
     if (input['PO'] !== undefined && input['CP'] !== undefined && input['ITEMs'] !== undefined) {
       let findcp = await mongodb.find(PATTERN, PATTERN_01, { "CP": input['CP'] });
+      let UNITdata = await mongodb.find(master_FN, UNIT, {});
 
       for (i = 0; i < findcp[0]['FINAL'].length; i++) {
         if (findcp[0]['FINAL'][i]['ITEMs'] === input['ITEMs']) {
@@ -220,12 +224,19 @@ router.post('/TPGHRC004-geteachITEM', async (req, res) => {
           //   "LOAD": findcp[0]['FINAL'][i]['LOAD'],
           //   "CONVERSE": findcp[0]['FINAL'][i]['CONVERSE'],
           // }]
-          TPGHRC004db["POINTs"] = findcp[0]['FINAL'][i]['POINT'],
-            TPGHRC004db["PCS"] = findcp[0]['FINAL'][i]['PCS'],
-            TPGHRC004db["PCSleft"] = findcp[0]['FINAL'][i]['PCS'],
-            TPGHRC004db["UNIT"] = "",
-            TPGHRC004db["INTERSEC"] = "",
-            output = 'OK';
+
+          for (j = 0; j < UNITdata.length; j++) {
+            if (findcp[0]['FINAL'][i]['UNIT'] == UNITdata[j]['masterID']) {
+              TPGHRC004db["UNIT"] = UNITdata[j]['UNIT'];
+            }
+          }
+
+          TPGHRC004db["POINTs"] = findcp[0]['FINAL'][i]['POINT'];
+          TPGHRC004db["PCS"] = findcp[0]['FINAL'][i]['PCS'];
+          TPGHRC004db["PCSleft"] = findcp[0]['FINAL'][i]['PCS'];
+
+          TPGHRC004db["INTERSEC"] = "";
+          output = 'OK';
           let findpo = await mongodb.find(MAIN_DATA, MAIN, { "PO": input['PO'] });
           if (findpo.length > 0) {
             request.post(
@@ -241,7 +252,7 @@ router.post('/TPGHRC004-geteachITEM', async (req, res) => {
               }
             );
           }
-
+          break;
         }
       }
     }
@@ -252,7 +263,7 @@ router.post('/TPGHRC004-geteachITEM', async (req, res) => {
       TPGHRC004db["PCSleft"] = '',
       TPGHRC004db["UNIT"] = "",
       TPGHRC004db["INTERSEC"] = "",
-      output = 'OK';
+      output = 'NOK';
   }
 
   //-------------------------------------
@@ -334,17 +345,72 @@ router.post('/TPGHRC004-feedback', async (req, res) => {
       }
       for (i = 0; i < LISTbuffer.length; i++) {
         if (LISTbuffer[i]['PO1'] === 'Mean') {
-          ITEMleftVALUEout.push({ "V1": 'Mean', "V2":`${LISTbuffer[i]['PO3']}` })
+          ITEMleftVALUEout.push({ "V1": 'Mean', "V2": `${LISTbuffer[i]['PO3']}` })
         } else {
           ITEMleftVALUEout.push({ "V1": `${LISTbuffer[i]['PO2']}`, "V2": `${LISTbuffer[i]['PO3']}` })
         }
 
       }
-      console.log(LISTbuffer);
+      // console.log(LISTbuffer);
       TPGHRC004db["PCSleft"] = `${parseInt(TPGHRC004db["PCS"]) - oblist.length}`;
       TPGHRC004db["ITEMleftUNIT"] = [{ "V1": "FINAL", "V2": `${oblist.length}` }];
       TPGHRC004db["ITEMleftVALUE"] = ITEMleftVALUEout;
-      output = 'OK';
+      // output = 'OK';
+      if ((parseInt(TPGHRC004db["PCS"]) - oblist.length) == 0) {
+        //CHECKlist
+        for (i = 0; i < feedback[0]['CHECKlist'].length; i++) {
+          if (input["ITEMs"] === feedback[0]['CHECKlist'][i]['key']) {
+            feedback[0]['CHECKlist'][i]['FINISH'] = 'OK';
+            // console.log(feedback[0]['CHECKlist']);
+            let feedbackupdate = await mongodb.update(MAIN_DATA, MAIN, { "PO": input['PO'] }, { "$set": { 'CHECKlist': feedback[0]['CHECKlist'] } });
+            break;
+          }
+        }
+        //input["ITEMs"] 
+        let masterITEMs = await mongodb.find(master_FN, ITEMs, { "masterID": input["ITEMs"] });
+
+        
+        if (feedback[0]['FINAL_ANS'] === undefined) {
+          feedback[0]['FINAL_ANS'] = {}
+        }
+        if (masterITEMs.length > 0) {
+          let anslist = [];
+          let anslist_con = [];       
+          
+
+          if (masterITEMs[0]['RESULTFORMAT'] === 'Number') {
+            for (i = 0; i < LISTbuffer.length; i++) {
+              if (LISTbuffer[i]['PO1'] === 'Mean') {
+                anslist.push(LISTbuffer[i]['PO3'])
+                anslist_con.push(LISTbuffer[i]['PO5'])
+              }
+            }
+
+            let sum1 = anslist.reduce((a, b) => a + b, 0);
+            let avg1 = (sum1 / anslist.length) || 0;
+            let sum2 = anslist_con.reduce((a, b) => a + b, 0);
+            let avg2 = (sum2 / anslist_con.length) || 0;
+
+            feedback[0]['FINAL_ANS'][input["ITEMs"]] = avg1;   
+            feedback[0]['FINAL_ANS'][`${input["ITEMs"]}_c`] = avg2;   
+           
+            let feedbackupdateRESULTFORMAT = await mongodb.update(MAIN_DATA, MAIN, { "PO": input['PO'] }, { "$set": { 'FINAL_ANS': feedback[0]['FINAL_ANS']} });
+
+
+          } else if (masterITEMs[0]['RESULTFORMAT'] === 'Text') {
+
+          } else if (masterITEMs[0]['RESULTFORMAT'] === 'Graph') {
+
+          } else if (masterITEMs[0]['RESULTFORMAT'] === 'Picture') {
+
+          } else if (masterITEMs[0]['RESULTFORMAT'] === 'OCR') {
+
+          } else {
+
+          }
+        }
+
+      }
     }
 
   }
@@ -383,6 +449,7 @@ router.post('/TPGHRC004-SETZERO', async (req, res) => {
       "PCSleft": "",
       "UNIT": "",
       "INTERSEC": "",
+      "GRAPHTYPE": "",
       "preview": [],
       "confirmdata": [],
       "ITEMleftUNIT": [],
@@ -504,24 +571,24 @@ router.post('/TPGHRC004-FINISH', async (req, res) => {
       if (!error && response.statusCode == 200) {
         // console.log(body);
         // if (body === 'OK') {
-          TPGHRC004db['confirmdata'] = [];
-          TPGHRC004db["value"] = [];
-          //------------------------------------------------------------------------------------
+        TPGHRC004db['confirmdata'] = [];
+        TPGHRC004db["value"] = [];
+        //------------------------------------------------------------------------------------
 
-          request.post(
-            'http://127.0.0.1:16000/TPGHRC004-feedback',
-            { json: { "PO": TPGHRC004db['PO'], "ITEMs": TPGHRC004db['inspectionItem'] } },
-            function (error, response, body2) {
-              if (!error && response.statusCode == 200) {
-                // console.log(body2);
-                // if (body2 === 'OK') {
-                  output = 'OK';
-                // }
-              }
+        request.post(
+          'http://127.0.0.1:16000/TPGHRC004-feedback',
+          { json: { "PO": TPGHRC004db['PO'], "ITEMs": TPGHRC004db['inspectionItem'] } },
+          function (error, response, body2) {
+            if (!error && response.statusCode == 200) {
+              // console.log(body2);
+              // if (body2 === 'OK') {
+              output = 'OK';
+              // }
             }
-          );
+          }
+        );
 
-          //------------------------------------------------------------------------------------
+        //------------------------------------------------------------------------------------
         // }
 
       }
