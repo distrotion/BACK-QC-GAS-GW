@@ -2,7 +2,7 @@ const express = require("express");
 const router = express.Router();
 var mongodb = require('../../function/mongodb');
 var mongodbINS = require('../../function/mongodbINS');
-var mssql = require('./../../function/mssql');
+var mssql = require('../../function/mssql');
 var request = require('request');
 
 //----------------- date
@@ -12,7 +12,7 @@ let day = d;
 
 //----------------- SETUP
 
-let NAME_INS = 'TPG-HRC-005'
+let NAME_INS = 'TPG-HMV-003'
 
 //----------------- DATABASE
 
@@ -31,11 +31,11 @@ let UNIT = 'UNIT';
 
 let finddbbuffer = [{}];
 
-let TPGHRC005db = {
+let TPGHMV003db = {
   "INS": NAME_INS,
   "PO": "",
   "CP": "",
-  "MATCP":   '',
+  "MATCP":  '',
   "QTY": "",
   "PROCESS": "",
   "CUSLOT": "",
@@ -68,21 +68,21 @@ let TPGHRC005db = {
   "dateupdatevalue": day,
 }
 
-router.get('/CHECK-TPGHRC005', async (req, res) => {
+router.get('/CHECK-TPGHMV003', async (req, res) => {
 
-  res.json(TPGHRC005db['PO']);
+  res.json(TPGHMV003db['PO']);
 });
 
 
-router.post('/TPGHRC005db', async (req, res) => {
+router.post('/TPGHMV003db', async (req, res) => {
   //-------------------------------------
-  // console.log('--TPGHRC005db--');
+  // console.log('--TPGHMV003db--');
   // console.log(req.body);
   //-------------------------------------
   let finddb = [{}];
   try {
 
-    finddb = TPGHRC005db;
+    finddb = TPGHMV003db;
     finddbbuffer = finddb;
   }
   catch (err) {
@@ -92,14 +92,14 @@ router.post('/TPGHRC005db', async (req, res) => {
   res.json(finddb);
 });
 
-router.post('/GETINtoTPGHRC005', async (req, res) => {
+router.post('/GETINtoTPGHMV003', async (req, res) => {
   //-------------------------------------
-  console.log('--GETINtoTPGHRC005--');
+  console.log('--GETINtoTPGHMV003--');
   console.log(req.body);
   let input = req.body;
   //-------------------------------------
   let output = 'NOK';
-  check = TPGHRC005db;
+  check = TPGHMV003db;
   if (input['PO'] !== undefined && input['CP'] !== undefined && check['PO'] === '') {
     let dbsap = await mssql.qurey(`select * FROM [SAPData_GW_GAS].[dbo].[tblSAPDetail] where [PO] = ${input['PO']}`);
     let findcp = await mongodb.find(PATTERN, PATTERN_01, { "CP": input['CP'] });
@@ -133,10 +133,10 @@ router.post('/GETINtoTPGHRC005', async (req, res) => {
 
     if (dbsap['recordsets'].length > 0) {
 
-      TPGHRC005db = {
+      TPGHMV003db = {
         "INS": NAME_INS,
         "PO": input['PO'] || '',
-        "CP":  '',
+        "CP": input['CP'] || '',
         "MATCP":  input['CP'] || '',
         "QTY": dbsap['recordsets'][0][0]['QUANTITY'] || '',
         "PROCESS": dbsap['recordsets'][0][0]['PROCESS'] || '',
@@ -183,18 +183,18 @@ router.post('/GETINtoTPGHRC005', async (req, res) => {
   res.json(output);
 });
 
-router.post('/TPGHRC005-geteachITEM', async (req, res) => {
+router.post('/TPGHMV003-geteachITEM', async (req, res) => {
   //-------------------------------------
-  console.log('--TPGHRC005-geteachITEM--');
+  console.log('--TPGHMV003-geteachITEM--');
   console.log(req.body);
   let inputB = req.body;
 
   let ITEMSS = '';
   let output = 'NOK';
 
-  for (i = 0; i < TPGHRC005db['ItemPickcode'].length; i++) {
-    if (TPGHRC005db['ItemPickcode'][i]['value'] === inputB['ITEMs']) {
-      ITEMSS = TPGHRC005db['ItemPickcode'][i]['key'];
+  for (i = 0; i < TPGHMV003db['ItemPickcode'].length; i++) {
+    if (TPGHMV003db['ItemPickcode'][i]['value'] === inputB['ITEMs']) {
+      ITEMSS = TPGHMV003db['ItemPickcode'][i]['key'];
     }
   }
 
@@ -202,14 +202,14 @@ router.post('/TPGHRC005-geteachITEM', async (req, res) => {
   if (ITEMSS !== '') {
 
     //-------------------------------------
-    TPGHRC005db['inspectionItem'] = ITEMSS;
-    TPGHRC005db['inspectionItemNAME'] = inputB['ITEMs'];
-    let input = { 'PO': TPGHRC005db["PO"], 'CP': TPGHRC005db["CP"], 'ITEMs': TPGHRC005db['inspectionItem'] };
+    TPGHMV003db['inspectionItem'] = ITEMSS;
+    TPGHMV003db['inspectionItemNAME'] = inputB['ITEMs'];
+    let input = { 'PO': TPGHMV003db["PO"], 'CP': TPGHMV003db["CP"], 'ITEMs': TPGHMV003db['inspectionItem'] };
     //-------------------------------------
     if (input['PO'] !== undefined && input['CP'] !== undefined && input['ITEMs'] !== undefined) {
       let findcp = await mongodb.find(PATTERN, PATTERN_01, { "CP": input['CP'] });
       let UNITdata = await mongodb.find(master_FN, UNIT, {});
-      let masterITEMs = await mongodb.find(master_FN, ITEMs, { "masterID": TPGHRC005db['inspectionItem'] });
+      let masterITEMs = await mongodb.find(master_FN, ITEMs, { "masterID": TPGHMV003db['inspectionItem'] });
 
       for (i = 0; i < findcp[0]['FINAL'].length; i++) {
         if (findcp[0]['FINAL'][i]['ITEMs'] === input['ITEMs']) {
@@ -232,27 +232,27 @@ router.post('/TPGHRC005-geteachITEM', async (req, res) => {
 
           if (masterITEMs.length > 0) {
             //
-            TPGHRC005db["RESULTFORMAT"] = masterITEMs[0]['RESULTFORMAT']
-            TPGHRC005db["GRAPHTYPE"] = masterITEMs[0]['GRAPHTYPE']
+            TPGHMV003db["RESULTFORMAT"] = masterITEMs[0]['RESULTFORMAT']
+            TPGHMV003db["GRAPHTYPE"] = masterITEMs[0]['GRAPHTYPE']
           }
 
           for (j = 0; j < UNITdata.length; j++) {
             if (findcp[0]['FINAL'][i]['UNIT'] == UNITdata[j]['masterID']) {
-              TPGHRC005db["UNIT"] = UNITdata[j]['UNIT'];
+              TPGHMV003db["UNIT"] = UNITdata[j]['UNIT'];
             }
           }
 
-          TPGHRC005db["POINTs"] = findcp[0]['FINAL'][i]['POINT'];
-          TPGHRC005db["PCS"] = findcp[0]['FINAL'][i]['PCS'];
-          TPGHRC005db["PCSleft"] = findcp[0]['FINAL'][i]['PCS'];
+          TPGHMV003db["POINTs"] = findcp[0]['FINAL'][i]['POINT'];
+          TPGHMV003db["PCS"] = findcp[0]['FINAL'][i]['PCS'];
+          TPGHMV003db["PCSleft"] = findcp[0]['FINAL'][i]['PCS'];
 
-          TPGHRC005db["INTERSEC"] = "";
+          TPGHMV003db["INTERSEC"] = "";
           output = 'OK';
           let findpo = await mongodb.find(MAIN_DATA, MAIN, { "PO": input['PO'] });
           if (findpo.length > 0) {
             request.post(
-              'http://127.0.0.1:16000/TPGHRC005-feedback',
-              { json: { "PO": TPGHRC005db['PO'], "ITEMs": TPGHRC005db['inspectionItem'] } },
+              'http://127.0.0.1:16000/TPGHMV003-feedback',
+              { json: { "PO": TPGHMV003db['PO'], "ITEMs": TPGHMV003db['inspectionItem'] } },
               function (error, response, body2) {
                 if (!error && response.statusCode == 200) {
                   // console.log(body2);
@@ -269,11 +269,11 @@ router.post('/TPGHRC005-geteachITEM', async (req, res) => {
     }
 
   } else {
-    TPGHRC005db["POINTs"] = '',
-      TPGHRC005db["PCS"] = '',
-      TPGHRC005db["PCSleft"] = '',
-      TPGHRC005db["UNIT"] = "",
-      TPGHRC005db["INTERSEC"] = "",
+    TPGHMV003db["POINTs"] = '',
+      TPGHMV003db["PCS"] = '',
+      TPGHMV003db["PCSleft"] = '',
+      TPGHMV003db["UNIT"] = "",
+      TPGHMV003db["INTERSEC"] = "",
       output = 'NOK';
   }
 
@@ -281,9 +281,9 @@ router.post('/TPGHRC005-geteachITEM', async (req, res) => {
   res.json(output);
 });
 
-router.post('/TPGHRC005-preview', async (req, res) => {
+router.post('/TPGHMV003-preview', async (req, res) => {
   //-------------------------------------
-  console.log('--TPGHRC005-preview--');
+  console.log('--TPGHMV003-preview--');
   console.log(req.body);
   let input = req.body;
   //-------------------------------------
@@ -292,7 +292,7 @@ router.post('/TPGHRC005-preview', async (req, res) => {
     if (input[0]['V1'] !== undefined) {
       //-------------------------------------
       try {
-        TPGHRC005db['preview'] = input;
+        TPGHMV003db['preview'] = input;
         output = 'OK';
       }
       catch (err) {
@@ -303,37 +303,43 @@ router.post('/TPGHRC005-preview', async (req, res) => {
       output = 'NOK';
     }
   } else {
-    TPGHRC005db['preview'] = [];
+    TPGHMV003db['preview'] = [];
     output = 'clear';
   }
   //-------------------------------------
   res.json(output);
 });
 
-router.post('/TPGHRC005-confirmdata', async (req, res) => {
+router.post('/TPGHMV003-confirmdata', async (req, res) => {
   //-------------------------------------
-  console.log('--TPGHRC005-confirmdata--');
+  console.log('--TPGHMV003-confirmdata--');
   console.log(req.body);
   // let input = req.body;
   //-------------------------------------
   let output = 'NOK';
   //-------------------------------------
   try {
-    let datapush = TPGHRC005db['preview'][0]
 
-    if (TPGHRC005db['RESULTFORMAT'] === 'Graph') {
+    let datapush = TPGHMV003db['preview'][0]
 
-    } else if (TPGHRC005db['RESULTFORMAT'] === 'Number') {
+    if (TPGHMV003db['RESULTFORMAT'] === 'Graph') {
 
-      let pushdata = TPGHRC005db['preview'][0]
+    } else if (TPGHMV003db['RESULTFORMAT'] === 'Number') {
 
-      pushdata['V5'] = TPGHRC005db['confirmdata'].length + 1
-      pushdata['V1'] = `${TPGHRC005db['confirmdata'].length + 1}:${pushdata['V1']}`
+      let pushdata = TPGHMV003db['preview'][0]
 
-      TPGHRC005db['confirmdata'].push(pushdata);
-      TPGHRC005db['preview'] = [];
+      pushdata['V5'] = TPGHMV003db['confirmdata'].length + 1
+      pushdata['V1'] = `${TPGHMV003db['confirmdata'].length + 1}:${pushdata['V1']}`
+
+      TPGHMV003db['confirmdata'].push(pushdata);
+      TPGHMV003db['preview'] = [];
       output = 'OK';
     }
+
+
+
+
+
   }
   catch (err) {
     output = 'NOK';
@@ -344,9 +350,9 @@ router.post('/TPGHRC005-confirmdata', async (req, res) => {
 
 
 
-router.post('/TPGHRC005-feedback', async (req, res) => {
+router.post('/TPGHMV003-feedback', async (req, res) => {
   //-------------------------------------
-  console.log('--TPGHRC005-feedback--');
+  console.log('--TPGHMV003-feedback--');
   console.log(req.body);
   let input = req.body;
   //-------------------------------------
@@ -361,29 +367,31 @@ router.post('/TPGHRC005-feedback', async (req, res) => {
       let ob = feedback[0]['FINAL'][NAME_INS][input["ITEMs"]];
 
 
+
       let LISTbuffer = [];
       let ITEMleftVALUEout = [];
       for (i = 0; i < oblist.length; i++) {
         LISTbuffer.push(...ob[oblist[i]])
       }
-      TPGHRC005db["PCSleft"] = `${parseInt(TPGHRC005db["PCS"]) - oblist.length}`;
-      if (TPGHRC005db['RESULTFORMAT'] === 'Number' || TPGHRC005db['RESULTFORMAT'] === 'Text') {
+      TPGHMV003db["PCSleft"] = `${parseInt(TPGHMV003db["PCS"]) - oblist.length}`;
+      if (TPGHMV003db['RESULTFORMAT'] === 'Number' || TPGHMV003db['RESULTFORMAT'] === 'Text') {
+
         for (i = 0; i < LISTbuffer.length; i++) {
           if (LISTbuffer[i]['PO1'] === 'Mean') {
-            ITEMleftVALUEout.push({ "V1": 'Mean', "V2": `${LISTbuffer[i]['PO3']}` })
+            ITEMleftVALUEout.push({ "V1": 'Mean', "V2": `${LISTbuffer[i]['PO3']}` });
           } else {
-            ITEMleftVALUEout.push({ "V1": `${LISTbuffer[i]['PO2']}`, "V2": `${LISTbuffer[i]['PO3']}` })
+            ITEMleftVALUEout.push({ "V1": `${LISTbuffer[i]['PO2']}`, "V2": `${LISTbuffer[i]['PO3']}` });
           }
-
         }
+        // output = 'OK';
         // console.log(LISTbuffer);
         
-        TPGHRC005db["ITEMleftUNIT"] = [{ "V1": "FINAL", "V2": `${oblist.length}` }];
-        TPGHRC005db["ITEMleftVALUE"] = ITEMleftVALUEout;
+        TPGHMV003db["ITEMleftUNIT"] = [{ "V1": "FINAL", "V2": `${oblist.length}` }];
+        TPGHMV003db["ITEMleftVALUE"] = ITEMleftVALUEout;
 
       }
       // output = 'OK';
-      if ((parseInt(TPGHRC005db["PCS"]) - oblist.length) == 0) {
+      if ((parseInt(TPGHMV003db["PCS"]) - oblist.length) == 0) {
         //CHECKlist
         for (i = 0; i < feedback[0]['CHECKlist'].length; i++) {
           if (input["ITEMs"] === feedback[0]['CHECKlist'][i]['key']) {
@@ -393,6 +401,7 @@ router.post('/TPGHRC005-feedback', async (req, res) => {
             break;
           }
         }
+
         //input["ITEMs"] 
         let masterITEMs = await mongodb.find(master_FN, ITEMs, { "masterID": input["ITEMs"] });
 
@@ -436,6 +445,7 @@ router.post('/TPGHRC005-feedback', async (req, res) => {
 
           }
         }
+
         let CHECKlistdataFINISH = [];
 
         for (i = 0; i < feedback[0]['CHECKlist'].length; i++) {
@@ -455,8 +465,8 @@ router.post('/TPGHRC005-feedback', async (req, res) => {
 
       }
     } else {
-      TPGHRC005db["ITEMleftUNIT"] = '';
-      TPGHRC005db["ITEMleftVALUE"] = '';
+      TPGHMV003db["ITEMleftUNIT"] = '';
+      TPGHMV003db["ITEMleftVALUE"] = '';
     }
 
   }
@@ -465,9 +475,9 @@ router.post('/TPGHRC005-feedback', async (req, res) => {
   res.json(output);
 });
 
-router.post('/TPGHRC005-SETZERO', async (req, res) => {
+router.post('/TPGHMV003-SETZERO', async (req, res) => {
   //-------------------------------------
-  console.log('--TPGHRC005fromINS--');
+  console.log('--TPGHMV003fromINS--');
   console.log(req.body);
   let input = req.body;
   //-------------------------------------
@@ -475,7 +485,7 @@ router.post('/TPGHRC005-SETZERO', async (req, res) => {
   //-------------------------------------
   try {
 
-    TPGHRC005db = {
+    TPGHMV003db = {
       "INS": NAME_INS,
       "PO": "",
       "CP": "",
@@ -519,9 +529,9 @@ router.post('/TPGHRC005-SETZERO', async (req, res) => {
   res.json(output);
 });
 
-router.post('/TPGHRC005-CLEAR', async (req, res) => {
+router.post('/TPGHMV003-CLEAR', async (req, res) => {
   //-------------------------------------
-  console.log('--TPGHRC005fromINS--');
+  console.log('--TPGHMV003fromINS--');
   console.log(req.body);
   let input = req.body;
   //-------------------------------------
@@ -529,8 +539,8 @@ router.post('/TPGHRC005-CLEAR', async (req, res) => {
   //-------------------------------------
   try {
 
-    TPGHRC005db['preview'] = [];
-    TPGHRC005db['confirmdata'] = [];
+    TPGHMV003db['preview'] = [];
+    TPGHMV003db['confirmdata'] = [];
 
     output = 'OK';
   }
@@ -541,9 +551,9 @@ router.post('/TPGHRC005-CLEAR', async (req, res) => {
   res.json(output);
 });
 
-router.post('/TPGHRC005-RESETVALUE', async (req, res) => {
+router.post('/TPGHMV003-RESETVALUE', async (req, res) => {
   //-------------------------------------
-  console.log('--TPGHRC005fromINS--');
+  console.log('--TPGHMV003fromINS--');
   console.log(req.body);
   let input = req.body;
   //-------------------------------------
@@ -551,9 +561,9 @@ router.post('/TPGHRC005-RESETVALUE', async (req, res) => {
   //-------------------------------------
   try {
 
-    let all = TPGHRC005db['confirmdata'].length
+    let all = TPGHMV003db['confirmdata'].length
     if (all > 0) {
-      TPGHRC005db['confirmdata'].pop();
+      TPGHMV003db['confirmdata'].pop();
     }
 
     output = 'OK';
@@ -568,24 +578,23 @@ router.post('/TPGHRC005-RESETVALUE', async (req, res) => {
 //"value":[],  //key: PO1: itemname ,PO2:V01,PO3: V02,PO4: V03,PO5:V04,P06:INS,P9:NO.,P10:TYPE, last alway mean P01:"MEAN",PO2:V01,PO3:V02-MEAN,PO4: V03,PO5:V04-MEAN
 
 
-router.post('/TPGHRC005-FINISH', async (req, res) => {
+router.post('/TPGHMV003-FINISH', async (req, res) => {
   //-------------------------------------
-  console.log('--TPGHRC005-FINISH--');
+  console.log('--TPGHMV003-FINISH--');
   console.log(req.body);
   let input = req.body;
   //-------------------------------------
   let output = 'OK';
+  if (TPGHMV003db['RESULTFORMAT'] === 'Number' || TPGHMV003db['RESULTFORMAT'] === 'Text') {
 
-  if (TPGHRC005db['RESULTFORMAT'] === 'Number' || TPGHRC005db['RESULTFORMAT'] === 'Text') {
-
-    TPGHRC005db["value"] = [];
-    for (i = 0; i < TPGHRC005db['confirmdata'].length; i++) {
-      TPGHRC005db["value"].push({
-        "PO1": TPGHRC005db["inspectionItemNAME"],
-        "PO2": TPGHRC005db['confirmdata'][i]['V1'],
-        "PO3": TPGHRC005db['confirmdata'][i]['V2'],
-        "PO4": TPGHRC005db['confirmdata'][i]['V3'],
-        "PO5": TPGHRC005db['confirmdata'][i]['V4'],
+    TPGHMV003db["value"] = [];
+    for (i = 0; i < TPGHMV003db['confirmdata'].length; i++) {
+      TPGHMV003db["value"].push({
+        "PO1": TPGHMV003db["inspectionItemNAME"],
+        "PO2": TPGHMV003db['confirmdata'][i]['V1'],
+        "PO3": TPGHMV003db['confirmdata'][i]['V2'],
+        "PO4": TPGHMV003db['confirmdata'][i]['V3'],
+        "PO5": TPGHMV003db['confirmdata'][i]['V4'],
         "PO6": "-",
         "PO7": "-",
         "PO8": "-",
@@ -593,50 +602,49 @@ router.post('/TPGHRC005-FINISH', async (req, res) => {
         "PO10": "AUTO",
       });
     }
-    if (TPGHRC005db["value"].length > 0) {
+    if (TPGHMV003db["value"].length > 0) {
       let mean01 = [];
       let mean02 = [];
-      for (i = 0; i < TPGHRC005db["value"].length; i++) {
-        mean01.push(parseFloat(TPGHRC005db["value"][i]["PO3"]));
-        mean02.push(parseFloat(TPGHRC005db["value"][i]["PO5"]));
+      for (i = 0; i < TPGHMV003db["value"].length; i++) {
+        mean01.push(parseFloat(TPGHMV003db["value"][i]["PO3"]));
+        mean02.push(parseFloat(TPGHMV003db["value"][i]["PO5"]));
       }
       let sum1 = mean01.reduce((a, b) => a + b, 0);
       let avg1 = (sum1 / mean01.length) || 0;
       let sum2 = mean02.reduce((a, b) => a + b, 0);
       let avg2 = (sum2 / mean02.length) || 0;
-      TPGHRC005db["value"].push({
+      TPGHMV003db["value"].push({
         "PO1": 'Mean',
-        "PO2": TPGHRC005db['confirmdata'][0]['V1'],
+        "PO2": TPGHMV003db['confirmdata'][0]['V1'],
         "PO3": avg1,
-        "PO4": TPGHRC005db['confirmdata'][0]['V3'],
+        "PO4": TPGHMV003db['confirmdata'][0]['V3'],
         "PO5": avg2,
       });
     }
+  } else if (TPGHMV003db['RESULTFORMAT'] === 'OCR' || TPGHMV003db['RESULTFORMAT'] === 'Picture') {
 
-  } else if (TPGHRC005db['RESULTFORMAT'] === 'OCR' || TPGHRC005db['RESULTFORMAT'] === 'Picture') {
-
-  } else if (TPGHRC005db['RESULTFORMAT'] === 'Graph') {
+  } else if (TPGHMV003db['RESULTFORMAT'] === 'Graph') {
 
   }
 
-  if (TPGHRC005db['RESULTFORMAT'] === 'Number' ||
-    TPGHRC005db['RESULTFORMAT'] === 'Text' ||
-    TPGHRC005db['RESULTFORMAT'] === 'OCR' ||
-    TPGHRC005db['RESULTFORMAT'] === 'Picture') {
+  if (TPGHMV003db['RESULTFORMAT'] === 'Number' ||
+    TPGHMV003db['RESULTFORMAT'] === 'Text' ||
+    TPGHMV003db['RESULTFORMAT'] === 'OCR' ||
+    TPGHMV003db['RESULTFORMAT'] === 'Picture') {
     request.post(
       'http://127.0.0.1:16000/FINISHtoDB',
-      { json: TPGHRC005db },
+      { json: TPGHMV003db },
       function (error, response, body) {
         if (!error && response.statusCode == 200) {
           // console.log(body);
           // if (body === 'OK') {
-          TPGHRC005db['confirmdata'] = [];
-          TPGHRC005db["value"] = [];
+          TPGHMV003db['confirmdata'] = [];
+          TPGHMV003db["value"] = [];
           //------------------------------------------------------------------------------------
 
           request.post(
-            'http://127.0.0.1:16000/TPGHRC005-feedback',
-            { json: { "PO": TPGHRC005db['PO'], "ITEMs": TPGHRC005db['inspectionItem'] } },
+            'http://127.0.0.1:16000/TPGHMV003-feedback',
+            { json: { "PO": TPGHMV003db['PO'], "ITEMs": TPGHMV003db['inspectionItem'] } },
             function (error, response, body2) {
               if (!error && response.statusCode == 200) {
                 // console.log(body2);
@@ -653,11 +661,10 @@ router.post('/TPGHRC005-FINISH', async (req, res) => {
         }
       }
     );
-
   }
 
   //-------------------------------------
-  res.json(TPGHRC005db);
+  res.json(TPGHMV003db);
 });
 
 
