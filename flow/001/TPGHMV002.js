@@ -363,7 +363,7 @@ router.post('/TPGHMV002-feedback', async (req, res) => {
 
       let LISTbuffer = [];
       let ITEMleftVALUEout = [];
-      
+
       for (i = 0; i < oblist.length; i++) {
         LISTbuffer.push(...ob[oblist[i]])
       }
@@ -378,11 +378,11 @@ router.post('/TPGHMV002-feedback', async (req, res) => {
 
         }
 
-        
+
         TPGHMV002db["ITEMleftUNIT"] = [{ "V1": "FINAL", "V2": `${oblist.length}` }];
         TPGHMV002db["ITEMleftVALUE"] = ITEMleftVALUEout;
 
-      }else{
+      } else {
 
       }
       // output = 'OK';
@@ -430,10 +430,20 @@ router.post('/TPGHMV002-feedback', async (req, res) => {
           } else if (masterITEMs[0]['RESULTFORMAT'] === 'Text') {
 
           } else if (masterITEMs[0]['RESULTFORMAT'] === 'Graph') {
+            //
+            let axis_data = [];
+            for (i = 0; i < LISTbuffer.length; i++) {
+              if (LISTbuffer[i]['PO1'] !== 'Mean') {
+                axis_data.push({ x: parseFloat(LISTbuffer[i].PO8), y: parseFloat(LISTbuffer[i].PO3) });
+              }
+
+
+            }
 
           } else if (masterITEMs[0]['RESULTFORMAT'] === 'Picture') {
-
+            //
           } else if (masterITEMs[0]['RESULTFORMAT'] === 'OCR') {
+            //
 
           } else {
 
@@ -444,17 +454,17 @@ router.post('/TPGHMV002-feedback', async (req, res) => {
 
         for (i = 0; i < feedback[0]['CHECKlist'].length; i++) {
           if (feedback[0]['CHECKlist'][i]['FINISH'] !== undefined) {
-            if(feedback[0]['CHECKlist'][i]['FINISH'] === 'OK'){
+            if (feedback[0]['CHECKlist'][i]['FINISH'] === 'OK') {
               CHECKlistdataFINISH.push(feedback[0]['CHECKlist'][i]['key'])
-            }else{
+            } else {
             }
           }
         }
 
-        if(CHECKlistdataFINISH.length === feedback[0]['CHECKlist'].length){
+        if (CHECKlistdataFINISH.length === feedback[0]['CHECKlist'].length) {
           // feedback[0]['FINAL_ANS']["ALL_DONE"] = "DONE";
           // feedback[0]['FINAL_ANS']["PO_judgment"] ="pass";
-          let feedbackupdateFINISH = await mongodb.update(MAIN_DATA, MAIN, { "PO": input['PO'] }, { "$set": { "ALL_DONE": "DONE" , "PO_judgment": "pass" ,} });
+          let feedbackupdateFINISH = await mongodb.update(MAIN_DATA, MAIN, { "PO": input['PO'] }, { "$set": { "ALL_DONE": "DONE", "PO_judgment": "pass", } });
         }
 
       }
