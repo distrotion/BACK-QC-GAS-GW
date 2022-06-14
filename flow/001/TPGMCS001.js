@@ -260,8 +260,10 @@ router.post('/TPGMCS001-geteachITEM', async (req, res) => {
 
           TPGMCS001db["POINTs"] = findcp[0]['FINAL'][i]['POINT'];
           TPGMCS001db["PCS"] = findcp[0]['FINAL'][i]['PCS'];
-          TPGMCS001db["PCSleft"] = findcp[0]['FINAL'][i]['PCS'];
-
+          if(TPGMCS001db["PCSleft"] === ''){
+            TPGMCS001db["PCSleft"] = findcp[0]['FINAL'][i]['PCS'];
+          }
+          
           TPGMCS001db["INTERSEC"] = "";
           output = 'OK';
           let findpo = await mongodb.find(MAIN_DATA, MAIN, { "PO": input['PO'] });

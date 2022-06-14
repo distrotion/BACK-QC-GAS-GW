@@ -260,7 +260,11 @@ router.post('/APPGASGW-geteachITEM', async (req, res) => {
 
           APPGASGWdb["POINTs"] = findcp[0]['FINAL'][i]['POINT'];
           APPGASGWdb["PCS"] = findcp[0]['FINAL'][i]['PCS'];
-          APPGASGWdb["PCSleft"] = findcp[0]['FINAL'][i]['PCS'];
+          
+          if( APPGASGWdb["PCSleft"] === ''){
+            APPGASGWdb["PCSleft"] = findcp[0]['FINAL'][i]['PCS'];
+          }
+          
 
           APPGASGWdb["INTERSEC"] = "";
           output = 'OK';

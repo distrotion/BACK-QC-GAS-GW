@@ -44,7 +44,8 @@ router.post('/FINISHtoDB', async (req, res) => {
     Tool[nameTool] = Item;
 
     output[nameFOR] = Tool;
-    output['dateG'] = day
+    output['dateG'] = new Date();
+    output['dateGSTR'] =day;
 
     delete output['MeasurmentFOR'];
     delete output['tool'];
