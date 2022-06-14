@@ -45,6 +45,14 @@ let TPGHRC004db = {
   "PART": "",
   "PARTNAME": "",
   "MATERIAL": "",
+  //---new
+  "QUANTITY": '',
+  // "PROCESS": '',
+  "CUSLOTNO":'',
+  "FG_CHARG":'',
+  "PARTNAME_PO":'',
+  "PART_PO":'',
+  "CUSTNAME": '',
   //-------
   "ItemPick": [],
   "ItemPickcode": [],
@@ -147,6 +155,14 @@ router.post('/GETINtoTPGHRC004', async (req, res) => {
         "PART": dbsap['recordsets'][0][0]['PART'] || '',
         "PARTNAME": dbsap['recordsets'][0][0]['PARTNAME'] || '',
         "MATERIAL": dbsap['recordsets'][0][0]['MATERIAL'] || '',
+        //---new
+        "QUANTITY":dbsap['recordsets'][0][0]['QUANTITY'] || '',
+        // "PROCESS":dbsap['recordsets'][0][0]['PROCESS'] || '',
+        "CUSLOTNO":dbsap['recordsets'][0][0]['CUSLOTNO'] || '',
+        "FG_CHARG":dbsap['recordsets'][0][0]['FG_CHARG'] || '',
+        "PARTNAME_PO":dbsap['recordsets'][0][0]['PARTNAME_PO'] || '',
+        "PART_PO":dbsap['recordsets'][0][0]['PART_PO'] || '',
+        "CUSTNAME":dbsap['recordsets'][0][0]['CUSTNAME'] || '',
         //----------------------
         "ItemPick": ItemPickoutP2, //---->
         "ItemPickcode": ItemPickcodeoutP2, //---->
@@ -491,6 +507,15 @@ router.post('/TPGHRC004-SETZERO', async (req, res) => {
       "PART": "",
       "PARTNAME": "",
       "MATERIAL": "",
+      //---new
+      "QUANTITY": '',
+      // "PROCESS": '',
+      "CUSLOTNO":'',
+      "FG_CHARG":'',
+      "PARTNAME_PO":'',
+      "PART_PO":'',
+      "CUSTNAME": '',
+      //-----
       "ItemPick": [],
       "ItemPickcode": [],
       "PCS": "",

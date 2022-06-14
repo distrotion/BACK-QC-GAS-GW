@@ -4,6 +4,14 @@ var mongodb = require('../../function/mongodb');
 var mssql = require('./../../function/mssql');
 
 
+//----------------- DATABASE
+
+let MAIN_DATA = 'MAIN_DATA';
+let MAIN = 'MAIN';
+
+//-----------------
+
+
 router.get('/flow001', async (req, res) => {
 
   res.json("testflow1");
@@ -20,6 +28,22 @@ router.post('/sap', async (req, res) => {
     if (db['recordsets'].length > 0) {
       output = db['recordsets'][0]
     }
+    let getdata = await mongodb.findsome(MAIN_DATA, MAIN,{});
+
+    for(i=0;i<output.length;i++){
+      for(j=0;j<getdata.length;j++){
+        if(output[i]['PO'] === getdata[j]['PO']){
+          output[i]['QCstatus'] = 'ip'
+          if(getdata[j]['ALL_DONE'] !== undefined){
+            output[i]['QCstatus'] = 'finish'
+          }
+          break;
+        }else{
+          output[i]['QCstatus'] = 'nohave'
+        }
+      }
+    }
+
   }
   catch (err) {
     output = [];
@@ -40,6 +64,20 @@ router.post('/sapdummy', async (req, res) => {
   //-------------------------------------
   res.json(output);
 });
+
+router.get('/testmongo', async (req, res) => {
+  //-------------------------------------
+  console.log('--sapdumm--');
+  console.log(req.body);
+  //-------------------------------------
+
+  let getdata = await mongodb.findsome(MAIN_DATA, MAIN,{});
+
+  //-------------------------------------
+  res.json(getdata);
+});
+
+
 
 
 

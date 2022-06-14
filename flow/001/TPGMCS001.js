@@ -45,6 +45,14 @@ let TPGMCS001db = {
   "PART": "",
   "PARTNAME": "",
   "MATERIAL": "",
+  //---new
+  "QUANTITY": '',
+  // "PROCESS": '',
+  "CUSLOTNO":'',
+  "FG_CHARG":'',
+  "PARTNAME_PO":'',
+  "PART_PO":'',
+  "CUSTNAME": '',
   //-------
   "ItemPick": [],
   "ItemPickcode": [],
@@ -137,7 +145,7 @@ router.post('/GETINtoTPGMCS001', async (req, res) => {
         "INS": NAME_INS,
         "PO": input['PO'] || '',
         "CP": input['CP'] || '',
-        "MATCP":  input['CP'] || '',
+        "MATCP": input['CP'] || '',
         "QTY": dbsap['recordsets'][0][0]['QUANTITY'] || '',
         "PROCESS": dbsap['recordsets'][0][0]['PROCESS'] || '',
         "CUSLOT": dbsap['recordsets'][0][0]['CUSLOTNO'] || '',
@@ -147,6 +155,14 @@ router.post('/GETINtoTPGMCS001', async (req, res) => {
         "PART": dbsap['recordsets'][0][0]['PART'] || '',
         "PARTNAME": dbsap['recordsets'][0][0]['PARTNAME'] || '',
         "MATERIAL": dbsap['recordsets'][0][0]['MATERIAL'] || '',
+        //---new
+        "QUANTITY":dbsap['recordsets'][0][0]['QUANTITY'] || '',
+        // "PROCESS":dbsap['recordsets'][0][0]['PROCESS'] || '',
+        "CUSLOTNO":dbsap['recordsets'][0][0]['CUSLOTNO'] || '',
+        "FG_CHARG":dbsap['recordsets'][0][0]['FG_CHARG'] || '',
+        "PARTNAME_PO":dbsap['recordsets'][0][0]['PARTNAME_PO'] || '',
+        "PART_PO":dbsap['recordsets'][0][0]['PART_PO'] || '',
+        "CUSTNAME":dbsap['recordsets'][0][0]['CUSTNAME'] || '',
         //----------------------
         "ItemPick": ItemPickoutP2, //---->
         "ItemPickcode": ItemPickcodeoutP2, //---->
@@ -444,8 +460,12 @@ router.post('/TPGMCS001-feedback', async (req, res) => {
           } else if (masterITEMs[0]['RESULTFORMAT'] === 'Graph') {
 
           } else if (masterITEMs[0]['RESULTFORMAT'] === 'Picture') {
+            feedback[0]['FINAL_ANS'][input["ITEMs"]] = LISTbuffer[0]['PIC1data'];
+            let feedbackupdateRESULTFORMAT = await mongodb.update(MAIN_DATA, MAIN, { "PO": input['PO'] }, { "$set": { 'FINAL_ANS': feedback[0]['FINAL_ANS'] } });
 
           } else if (masterITEMs[0]['RESULTFORMAT'] === 'OCR') {
+            feedback[0]['FINAL_ANS'][input["ITEMs"]] = LISTbuffer[0]['PIC1data'];
+            let feedbackupdateRESULTFORMAT = await mongodb.update(MAIN_DATA, MAIN, { "PO": input['PO'] }, { "$set": { 'FINAL_ANS': feedback[0]['FINAL_ANS'] } });
 
           } else {
 
@@ -456,17 +476,17 @@ router.post('/TPGMCS001-feedback', async (req, res) => {
 
         for (i = 0; i < feedback[0]['CHECKlist'].length; i++) {
           if (feedback[0]['CHECKlist'][i]['FINISH'] !== undefined) {
-            if(feedback[0]['CHECKlist'][i]['FINISH'] === 'OK'){
+            if (feedback[0]['CHECKlist'][i]['FINISH'] === 'OK') {
               CHECKlistdataFINISH.push(feedback[0]['CHECKlist'][i]['key'])
-            }else{
+            } else {
             }
           }
         }
 
-        if(CHECKlistdataFINISH.length === feedback[0]['CHECKlist'].length){
+        if (CHECKlistdataFINISH.length === feedback[0]['CHECKlist'].length) {
           // feedback[0]['FINAL_ANS']["ALL_DONE"] = "DONE";
           // feedback[0]['FINAL_ANS']["PO_judgment"] ="pass";
-          let feedbackupdateFINISH = await mongodb.update(MAIN_DATA, MAIN, { "PO": input['PO'] }, { "$set": { "ALL_DONE": "DONE" , "PO_judgment": "pass" ,} });
+          let feedbackupdateFINISH = await mongodb.update(MAIN_DATA, MAIN, { "PO": input['PO'] }, { "$set": { "ALL_DONE": "DONE", "PO_judgment": "pass", } });
         }
 
       }
@@ -506,6 +526,15 @@ router.post('/TPGMCS001-SETZERO', async (req, res) => {
       "PART": "",
       "PARTNAME": "",
       "MATERIAL": "",
+      //---new
+      "QUANTITY": '',
+      // "PROCESS": '',
+      "CUSLOTNO":'',
+      "FG_CHARG":'',
+      "PARTNAME_PO":'',
+      "PART_PO":'',
+      "CUSTNAME": '',
+      //-----
       "ItemPick": [],
       "ItemPickcode": [],
       "PCS": "",
@@ -832,6 +861,10 @@ router.post('/TPGMCS001-FINISH-IMG', async (req, res) => {
       "PIC2": input["IMG02"],
       "PIC3": input["IMG03"],
       "PIC4": input["IMG04"],
+      "PIC1data": input["IMG01data"] || 0,
+      "PIC2data": input["IMG02data"] || 0,
+      "PIC3data": input["IMG03data"] || 0,
+      "PIC4data": input["IMG04data"] || 0,
     });
 
 

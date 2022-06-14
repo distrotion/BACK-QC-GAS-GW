@@ -45,6 +45,14 @@ let APPGASGWdb = {
   "PART": "",
   "PARTNAME": "",
   "MATERIAL": "",
+  //---new
+  "QUANTITY": '',
+  // "PROCESS": '',
+  "CUSLOTNO":'',
+  "FG_CHARG":'',
+  "PARTNAME_PO":'',
+  "PART_PO":'',
+  "CUSTNAME": '',
   //-------
   "ItemPick": [],
   "ItemPickcode": [],
@@ -147,6 +155,14 @@ router.post('/GETINtoAPPGASGW', async (req, res) => {
         "PART": dbsap['recordsets'][0][0]['PART'] || '',
         "PARTNAME": dbsap['recordsets'][0][0]['PARTNAME'] || '',
         "MATERIAL": dbsap['recordsets'][0][0]['MATERIAL'] || '',
+        //---new
+        "QUANTITY":dbsap['recordsets'][0][0]['QUANTITY'] || '',
+        // "PROCESS":dbsap['recordsets'][0][0]['PROCESS'] || '',
+        "CUSLOTNO":dbsap['recordsets'][0][0]['CUSLOTNO'] || '',
+        "FG_CHARG":dbsap['recordsets'][0][0]['FG_CHARG'] || '',
+        "PARTNAME_PO":dbsap['recordsets'][0][0]['PARTNAME_PO'] || '',
+        "PART_PO":dbsap['recordsets'][0][0]['PART_PO'] || '',
+        "CUSTNAME":dbsap['recordsets'][0][0]['CUSTNAME'] || '',
         //----------------------
         "ItemPick": ItemPickoutP2, //---->
         "ItemPickcode": ItemPickcodeoutP2, //---->
@@ -366,9 +382,18 @@ router.post('/APPGASGW-feedback', async (req, res) => {
 
       let LISTbuffer = [];
       let ITEMleftVALUEout = [];
-      for (i = 0; i < oblist.length; i++) {
-        LISTbuffer.push(...ob[oblist[i]])
+
+      if(ob[0] !== undefined){
+        for (i = 0; i < oblist.length; i++) {
+          LISTbuffer.push(...ob[oblist[i]])
+        }
+      }else{
+        for (i = 0; i < oblist.length; i++) {
+          LISTbuffer.push(ob[oblist[i]])
+        }
       }
+
+      
       APPGASGWdb["PCSleft"] = `${parseInt(APPGASGWdb["PCS"]) - oblist.length}`;
       if (APPGASGWdb['RESULTFORMAT'] === 'Number') {
         for (i = 0; i < LISTbuffer.length; i++) {
@@ -489,6 +514,15 @@ router.post('/APPGASGW-SETZERO', async (req, res) => {
       "PART": "",
       "PARTNAME": "",
       "MATERIAL": "",
+      //---new
+      "QUANTITY": '',
+      // "PROCESS": '',
+      "CUSLOTNO":'',
+      "FG_CHARG":'',
+      "PARTNAME_PO":'',
+      "PART_PO":'',
+      "CUSTNAME": '',
+      //-----
       "ItemPick": [],
       "ItemPickcode": [],
       "PCS": "",
@@ -674,7 +708,7 @@ router.post('/APPGASGW-FINISH-APR', async (req, res) => {
 
     APPGASGWdb["value"] = [];
 
-    APPGASGWdb["value"].push({
+    APPGASGWdb["value"] ={
       "PO1": input["APRitem"],
       "PO2": input["APRre"],
       "PO3": "-",
@@ -685,7 +719,7 @@ router.post('/APPGASGW-FINISH-APR', async (req, res) => {
       "PO8": "-",
       "PO9": i + 1,
       "PO10": "AUTO",
-    });
+    };
 
 
   }
