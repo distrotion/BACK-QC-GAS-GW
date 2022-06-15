@@ -710,8 +710,6 @@ router.post('/APPGASGW-FINISH-APR', async (req, res) => {
 
   if (APPGASGWdb['RESULTFORMAT'] === 'Text' && input["APRitem"] !== undefined && input["APRre"] !== undefined) {
 
-    APPGASGWdb["value"] = [];
-
     APPGASGWdb["value"] = {
       "PO1": input["APRitem"],
       "PO2": input["APRre"],
@@ -721,7 +719,7 @@ router.post('/APPGASGW-FINISH-APR', async (req, res) => {
       "PO6": "-",
       "PO7": "-",
       "PO8": "-",
-      "PO9": i + 1,
+      "PO9": 1,
       "PO10": "AUTO",
     };
 
@@ -730,7 +728,7 @@ router.post('/APPGASGW-FINISH-APR', async (req, res) => {
 
   if (APPGASGWdb['RESULTFORMAT'] === 'Text') {
     request.post(
-      'http://127.0.0.1:16000/FINISHtoDB',
+      'http://127.0.0.1:16000/FINISHtoDB-apr',
       { json: APPGASGWdb },
       function (error, response, body) {
         if (!error && response.statusCode == 200) {

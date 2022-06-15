@@ -100,6 +100,9 @@ router.post('/GETINSset', async (req, res) => {
       }
 
       INSLISTans = [...new Set(INSLIST)];
+      if(INSLISTans.length === 0){
+        let feedbackupdateFINISH = await mongodb.update(MAIN_DATA, MAIN, { "PO": input['PO'] }, { "$set": { "ALL_DONE": "DONE", "PO_judgment": "pass", } });
+      }
     }
     catch (errin) {
       if (findcp.length > 0) {
@@ -124,6 +127,7 @@ router.post('/GETINSset', async (req, res) => {
           }
         }
         INSLISTans = [...new Set(INSLIST)];
+        
       }else{
         INSLISTans = [];
       }
