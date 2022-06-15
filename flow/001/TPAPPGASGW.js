@@ -48,10 +48,10 @@ let APPGASGWdb = {
   //---new
   "QUANTITY": '',
   // "PROCESS": '',
-  "CUSLOTNO":'',
-  "FG_CHARG":'',
-  "PARTNAME_PO":'',
-  "PART_PO":'',
+  "CUSLOTNO": '',
+  "FG_CHARG": '',
+  "PARTNAME_PO": '',
+  "PART_PO": '',
   "CUSTNAME": '',
   //-------
   "ItemPick": [],
@@ -156,13 +156,13 @@ router.post('/GETINtoAPPGASGW', async (req, res) => {
         "PARTNAME": dbsap['recordsets'][0][0]['PARTNAME'] || '',
         "MATERIAL": dbsap['recordsets'][0][0]['MATERIAL'] || '',
         //---new
-        "QUANTITY":dbsap['recordsets'][0][0]['QUANTITY'] || '',
+        "QUANTITY": dbsap['recordsets'][0][0]['QUANTITY'] || '',
         // "PROCESS":dbsap['recordsets'][0][0]['PROCESS'] || '',
-        "CUSLOTNO":dbsap['recordsets'][0][0]['CUSLOTNO'] || '',
-        "FG_CHARG":dbsap['recordsets'][0][0]['FG_CHARG'] || '',
-        "PARTNAME_PO":dbsap['recordsets'][0][0]['PARTNAME_PO'] || '',
-        "PART_PO":dbsap['recordsets'][0][0]['PART_PO'] || '',
-        "CUSTNAME":dbsap['recordsets'][0][0]['CUSTNAME'] || '',
+        "CUSLOTNO": dbsap['recordsets'][0][0]['CUSLOTNO'] || '',
+        "FG_CHARG": dbsap['recordsets'][0][0]['FG_CHARG'] || '',
+        "PARTNAME_PO": dbsap['recordsets'][0][0]['PARTNAME_PO'] || '',
+        "PART_PO": dbsap['recordsets'][0][0]['PART_PO'] || '',
+        "CUSTNAME": dbsap['recordsets'][0][0]['CUSTNAME'] || '',
         //----------------------
         "ItemPick": ItemPickoutP2, //---->
         "ItemPickcode": ItemPickcodeoutP2, //---->
@@ -260,11 +260,11 @@ router.post('/APPGASGW-geteachITEM', async (req, res) => {
 
           APPGASGWdb["POINTs"] = findcp[0]['FINAL'][i]['POINT'];
           APPGASGWdb["PCS"] = findcp[0]['FINAL'][i]['PCS'];
-          
-          if( APPGASGWdb["PCSleft"] === ''){
-            APPGASGWdb["PCSleft"] = findcp[0]['FINAL'][i]['PCS'];
-          }
-          
+
+
+          APPGASGWdb["PCSleft"] = findcp[0]['FINAL'][i]['PCS'];
+
+
 
           APPGASGWdb["INTERSEC"] = "";
           output = 'OK';
@@ -387,17 +387,17 @@ router.post('/APPGASGW-feedback', async (req, res) => {
       let LISTbuffer = [];
       let ITEMleftVALUEout = [];
 
-      if(ob[0] !== undefined){
+      if (ob[0] !== undefined) {
         for (i = 0; i < oblist.length; i++) {
           LISTbuffer.push(...ob[oblist[i]])
         }
-      }else{
+      } else {
         for (i = 0; i < oblist.length; i++) {
           LISTbuffer.push(ob[oblist[i]])
         }
       }
 
-      
+
       APPGASGWdb["PCSleft"] = `${parseInt(APPGASGWdb["PCS"]) - oblist.length}`;
       if (APPGASGWdb['RESULTFORMAT'] === 'Number') {
         for (i = 0; i < LISTbuffer.length; i++) {
@@ -521,10 +521,10 @@ router.post('/APPGASGW-SETZERO', async (req, res) => {
       //---new
       "QUANTITY": '',
       // "PROCESS": '',
-      "CUSLOTNO":'',
-      "FG_CHARG":'',
-      "PARTNAME_PO":'',
-      "PART_PO":'',
+      "CUSLOTNO": '',
+      "FG_CHARG": '',
+      "PARTNAME_PO": '',
+      "PART_PO": '',
       "CUSTNAME": '',
       //-----
       "ItemPick": [],
@@ -712,7 +712,7 @@ router.post('/APPGASGW-FINISH-APR', async (req, res) => {
 
     APPGASGWdb["value"] = [];
 
-    APPGASGWdb["value"] ={
+    APPGASGWdb["value"] = {
       "PO1": input["APRitem"],
       "PO2": input["APRre"],
       "PO3": "-",
