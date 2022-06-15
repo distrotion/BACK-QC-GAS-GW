@@ -10,6 +10,7 @@ router.use(require("./flow/001/TPGHMV003"))
 router.use(require("./flow/001/TPGHRC004"))
 router.use(require("./flow/001/TPGHRC005"))
 router.use(require("./flow/001/TPGMCS001"))
+router.use(require("./flow/001/TPGHVK003"))
 router.use(require("./flow/001/INSFINISH"))
 router.use(require("./flow/001/cleardata"))
 //INSFINISH
