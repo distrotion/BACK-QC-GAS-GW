@@ -462,8 +462,8 @@ router.post('/TPGMCS001-feedback', async (req, res) => {
           } else if (masterITEMs[0]['RESULTFORMAT'] === 'Graph') {
 
           } else if (masterITEMs[0]['RESULTFORMAT'] === 'Picture') {
-            feedback[0]['FINAL_ANS'][input["ITEMs"]] = LISTbuffer[0]['PIC1data'];
-            let feedbackupdateRESULTFORMAT = await mongodb.update(MAIN_DATA, MAIN, { "PO": input['PO'] }, { "$set": { 'FINAL_ANS': feedback[0]['FINAL_ANS'] } });
+            // feedback[0]['FINAL_ANS'][input["ITEMs"]] = LISTbuffer[0]['PIC1data'];
+            let feedbackupdateRESULTFORMAT = await mongodb.update(MAIN_DATA, MAIN, { "PO": input['PO'] }, { "$set": { 'FINAL_ANS': 'Good'} });
 
           } else if (masterITEMs[0]['RESULTFORMAT'] === 'OCR') {
             feedback[0]['FINAL_ANS'][input["ITEMs"]] = LISTbuffer[0]['PIC1data'];
