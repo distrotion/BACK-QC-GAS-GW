@@ -63,6 +63,8 @@ let TPGHVK003db = {
   "INTERSEC": "",
   "RESULTFORMAT": "",
   "GRAPHTYPE": "",
+  "GAP":"",
+  //---------
   "preview": [],
   "confirmdata": [],
   "ITEMleftUNIT": [],
@@ -175,6 +177,7 @@ router.post('/GETINtoTPGHVK003', async (req, res) => {
         "INTERSEC": "",
         "RESULTFORMAT": "",
         "GRAPHTYPE": "",
+        "GAP":"",
         //----------------------
         "preview": [],
         "confirmdata": [],
@@ -539,6 +542,8 @@ router.post('/TPGHVK003-SETZERO', async (req, res) => {
       "INTERSEC": "",
       "RESULTFORMAT": "",
       "GRAPHTYPE": "",
+      "GAP":"",
+      //---------
       "preview": [],
       "confirmdata": [],
       "ITEMleftUNIT": [],

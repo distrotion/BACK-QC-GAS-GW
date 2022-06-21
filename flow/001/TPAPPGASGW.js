@@ -63,6 +63,8 @@ let APPGASGWdb = {
   "INTERSEC": "",
   "RESULTFORMAT": "",
   "GRAPHTYPE": "",
+  "GAP":"",
+  //---------
   "preview": [],
   "confirmdata": [],
   "ITEMleftUNIT": [],
@@ -173,6 +175,7 @@ router.post('/GETINtoAPPGASGW', async (req, res) => {
         "INTERSEC": "",
         "RESULTFORMAT": "",
         "GRAPHTYPE": "",
+        "GAP":"",
         //----------------------
         "preview": [],
         "confirmdata": [],
@@ -535,6 +538,8 @@ router.post('/APPGASGW-SETZERO', async (req, res) => {
       "INTERSEC": "",
       "RESULTFORMAT": "",
       "GRAPHTYPE": "",
+      "GAP":"",
+      //---------
       "preview": [],
       "confirmdata": [],
       "ITEMleftUNIT": [],

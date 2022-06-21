@@ -63,6 +63,8 @@ let TPGHMV003db = {
   "INTERSEC": "",
   "RESULTFORMAT": "",
   "GRAPHTYPE": "",
+  "GAP":"",
+  //---------
   "preview": [],
   "confirmdata": [],
   "ITEMleftUNIT": [],
@@ -173,6 +175,7 @@ router.post('/GETINtoTPGHMV003', async (req, res) => {
         "INTERSEC": "",
         "RESULTFORMAT": "",
         "GRAPHTYPE": "",
+        "GAP":"",
         //----------------------
         "preview": [],
         "confirmdata": [],
@@ -533,6 +536,8 @@ router.post('/TPGHMV003-SETZERO', async (req, res) => {
       "INTERSEC": "",
       "RESULTFORMAT": "",
       "GRAPHTYPE": "",
+      "GAP":"",
+      //---------
       "preview": [],
       "confirmdata": [],
       "ITEMleftUNIT": [],

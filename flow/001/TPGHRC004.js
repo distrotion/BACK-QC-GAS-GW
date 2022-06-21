@@ -63,6 +63,8 @@ let TPGHRC004db = {
   "INTERSEC": "",
   "RESULTFORMAT": "",
   "GRAPHTYPE": "",
+  "GAP":"",
+  //---------
   "preview": [],
   "confirmdata": [],
   "ITEMleftUNIT": [],
@@ -173,6 +175,7 @@ router.post('/GETINtoTPGHRC004', async (req, res) => {
         "INTERSEC": "",
         "RESULTFORMAT": "",
         "GRAPHTYPE": "",
+        "GAP":"",
         //----------------------
         "preview": [],
         "confirmdata": [],
@@ -524,6 +527,8 @@ router.post('/TPGHRC004-SETZERO', async (req, res) => {
       "INTERSEC": "",
       "RESULTFORMAT": "",
       "GRAPHTYPE": "",
+      "GAP":"",
+      //---------
       "preview": [],
       "confirmdata": [],
       "ITEMleftUNIT": [],

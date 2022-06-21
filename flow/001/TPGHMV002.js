@@ -21,6 +21,7 @@ let MAIN = 'MAIN';
 
 let PATTERN = 'PATTERN';
 let PATTERN_01 = 'PATTERN_01';
+let GRAPH_TABLE = 'GRAPH_TABLE';
 let master_FN = 'master_FN';
 let ITEMs = 'ITEMs';
 let METHOD = 'METHOD';
@@ -49,7 +50,7 @@ let TPGHMV002db = {
   "QUANTITY": '',
   // "PROCESS": '',
   "CUSLOTNO": '',
-  "FG_CHARG":'',
+  "FG_CHARG": '',
   "PARTNAME_PO": '',
   "PART_PO": '',
   "CUSTNAME": '',
@@ -63,6 +64,11 @@ let TPGHMV002db = {
   "INTERSEC": "",
   "RESULTFORMAT": "",
   "GRAPHTYPE": "",
+  "GAP": "",
+  "GAPname": '',
+  "GAPnameList": [],
+  "GAPnameListdata": ['', '', '', '', '', '', '', '', '', '', '', '', '', '', ''],
+  //---------
   "preview": [],
   "confirmdata": [],
   "ITEMleftUNIT": [],
@@ -158,13 +164,13 @@ router.post('/GETINtoTPGHMV002', async (req, res) => {
         "PARTNAME": dbsap['recordsets'][0][0]['PARTNAME'] || '',
         "MATERIAL": dbsap['recordsets'][0][0]['MATERIAL'] || '',
         //---new
-        "QUANTITY":dbsap['recordsets'][0][0]['QUANTITY'] || '',
+        "QUANTITY": dbsap['recordsets'][0][0]['QUANTITY'] || '',
         // "PROCESS":dbsap['recordsets'][0][0]['PROCESS'] || '',
-        "CUSLOTNO":dbsap['recordsets'][0][0]['CUSLOTNO'] || '',
-        "FG_CHARG":dbsap['recordsets'][0][0]['FG_CHARG'] || '',
-        "PARTNAME_PO":dbsap['recordsets'][0][0]['PARTNAME_PO'] || '',
-        "PART_PO":dbsap['recordsets'][0][0]['PART_PO'] || '',
-        "CUSTNAME":dbsap['recordsets'][0][0]['CUSTNAME'] || '',
+        "CUSLOTNO": dbsap['recordsets'][0][0]['CUSLOTNO'] || '',
+        "FG_CHARG": dbsap['recordsets'][0][0]['FG_CHARG'] || '',
+        "PARTNAME_PO": dbsap['recordsets'][0][0]['PARTNAME_PO'] || '',
+        "PART_PO": dbsap['recordsets'][0][0]['PART_PO'] || '',
+        "CUSTNAME": dbsap['recordsets'][0][0]['CUSTNAME'] || '',
         //----------------------
         "ItemPick": ItemPickoutP2, //---->
         "ItemPickcode": ItemPickcodeoutP2, //---->
@@ -175,6 +181,10 @@ router.post('/GETINtoTPGHMV002', async (req, res) => {
         "INTERSEC": "",
         "RESULTFORMAT": "",
         "GRAPHTYPE": "",
+        "GAP": "",
+        "GAPname": '',
+        "GAPnameList": [],
+        "GAPnameListdata": ['', '', '', '', '', '', '', '', '', '', '', '', '', '', ''],
         //----------------------
         "preview": [],
         "confirmdata": [],
@@ -248,10 +258,23 @@ router.post('/TPGHMV002-geteachITEM', async (req, res) => {
           //   "CONVERSE": findcp[0]['FINAL'][i]['CONVERSE'],
           // }]
 
+
+
+
+
+
+
           if (masterITEMs.length > 0) {
             //
             TPGHMV002db["RESULTFORMAT"] = masterITEMs[0]['RESULTFORMAT']
             TPGHMV002db["GRAPHTYPE"] = masterITEMs[0]['GRAPHTYPE']
+            //------------------------------------
+       
+            let graph = await mongodb.find(PATTERN, GRAPH_TABLE, {});
+            TPGHMV002db['GAPnameList'] = [];
+            for (k = 0; k < graph.length; k++) {
+              TPGHMV002db['GAPnameList'].push(graph[k]['NO']);
+            }
           }
 
           for (j = 0; j < UNITdata.length; j++) {
@@ -259,6 +282,8 @@ router.post('/TPGHMV002-geteachITEM', async (req, res) => {
               TPGHMV002db["UNIT"] = UNITdata[j]['UNIT'];
             }
           }
+
+          console.log(findcp[0]['FINAL'][i]['POINT']);
 
           TPGHMV002db["POINTs"] = findcp[0]['FINAL'][i]['POINT'];
           TPGHMV002db["PCS"] = findcp[0]['FINAL'][i]['PCS'];
@@ -297,6 +322,20 @@ router.post('/TPGHMV002-geteachITEM', async (req, res) => {
 
   //-------------------------------------
   res.json(output);
+});
+
+router.post('/TPGHMV002-geteachGRAPH', async (req, res) => {
+  //-------------------------------------
+  console.log('--TPGHMV002-geteachGRAPH--');
+  console.log(req.body);
+  let input = req.body;
+  //-------------------------------------
+  let graph = await mongodb.find(PATTERN, GRAPH_TABLE, { "NO": input['GAPname'] });
+  console.log(graph);
+  TPGHMV002db['GAPnameListdata'] = graph[0];//confirmdata
+  TPGHMV002db['GAP'] = TPGHMV002db['GAPnameListdata'][`GT${TPGHMV002db['confirmdata'].length+1}` ]
+  //-------------------------------------
+  res.json('ok');
 });
 
 router.post('/TPGHMV002-preview', async (req, res) => {
@@ -340,6 +379,15 @@ router.post('/TPGHMV002-confirmdata', async (req, res) => {
     let datapush = TPGHMV002db['preview'][0]
 
     if (TPGHMV002db['RESULTFORMAT'] === 'Graph') {
+      let pushdata = TPGHMV002db['preview'][0]
+
+      pushdata['V5'] = TPGHMV002db['GAP'];
+      pushdata['V1'] = `${TPGHMV002db['confirmdata'].length + 1}:${pushdata['V1']}`;
+
+      TPGHMV002db['confirmdata'].push(pushdata);
+      TPGHMV002db['preview'] = [];
+      output = 'OK';
+      TPGHMV002db['GAP'] = TPGHMV002db['GAPnameListdata'][`GT${TPGHMV002db['confirmdata'].length+1}` ]
 
     } else if (TPGHMV002db['RESULTFORMAT'] === 'Number') {
 
@@ -396,6 +444,11 @@ router.post('/TPGHMV002-feedback', async (req, res) => {
 
         }
 
+
+
+
+
+        
 
         TPGHMV002db["ITEMleftUNIT"] = [{ "V1": "FINAL", "V2": `${oblist.length}` }];
         TPGHMV002db["ITEMleftVALUE"] = ITEMleftVALUEout;
@@ -525,10 +578,10 @@ router.post('/TPGHMV002-SETZERO', async (req, res) => {
       //---new
       "QUANTITY": '',
       // "PROCESS": '',
-      "CUSLOTNO":'',
-      "FG_CHARG":'',
-      "PARTNAME_PO":'',
-      "PART_PO":'',
+      "CUSLOTNO": '',
+      "FG_CHARG": '',
+      "PARTNAME_PO": '',
+      "PART_PO": '',
       "CUSTNAME": '',
       //-----
       "ItemPick": [],
@@ -539,6 +592,11 @@ router.post('/TPGHMV002-SETZERO', async (req, res) => {
       "INTERSEC": "",
       "RESULTFORMAT": "",
       "GRAPHTYPE": "",
+      "GAP": "",
+      "GAPname": '',
+      "GAPnameList": [],
+      "GAPnameListdata": ['', '', '', '', '', '', '', '', '', '', '', '', '', '', ''],
+      //---------
       "preview": [],
       "confirmdata": [],
       "ITEMleftUNIT": [],
@@ -629,7 +687,7 @@ router.post('/TPGHMV002-FINISH', async (req, res) => {
         "PO5": TPGHMV002db['confirmdata'][i]['V4'],
         "PO6": "-",
         "PO7": "-",
-        "PO8": "-",
+        "PO8": '-',
         "PO9": i + 1,
         "PO10": "AUTO",
       });
@@ -658,12 +716,47 @@ router.post('/TPGHMV002-FINISH', async (req, res) => {
 
   } else if (TPGHMV002db['RESULTFORMAT'] === 'Graph') {
 
+    TPGHMV002db["value"] = [];
+    for (i = 0; i < TPGHMV002db['confirmdata'].length; i++) {
+      TPGHMV002db["value"].push({
+        "PO1": TPGHMV002db["inspectionItemNAME"],
+        "PO2": TPGHMV002db['confirmdata'][i]['V1'],
+        "PO3": TPGHMV002db['confirmdata'][i]['V2'],
+        "PO4": TPGHMV002db['confirmdata'][i]['V3'],
+        "PO5": TPGHMV002db['confirmdata'][i]['V4'],
+        "PO6": "-",
+        "PO7": "-",
+        "PO8": TPGHMV002db['confirmdata'][i]['V5'],
+        "PO9": i + 1,
+        "PO10": "AUTO",
+      });
+    }
+    if (TPGHMV002db["value"].length > 0) {
+      let mean01 = [];
+      let mean02 = [];
+      for (i = 0; i < TPGHMV002db["value"].length; i++) {
+        mean01.push(parseFloat(TPGHMV002db["value"][i]["PO3"]));
+        mean02.push(parseFloat(TPGHMV002db["value"][i]["PO5"]));
+      }
+      let sum1 = mean01.reduce((a, b) => a + b, 0);
+      let avg1 = (sum1 / mean01.length) || 0;
+      let sum2 = mean02.reduce((a, b) => a + b, 0);
+      let avg2 = (sum2 / mean02.length) || 0;
+      TPGHMV002db["value"].push({
+        "PO1": 'Mean',
+        "PO2": TPGHMV002db['confirmdata'][0]['V1'],
+        "PO3": avg1,
+        "PO4": TPGHMV002db['confirmdata'][0]['V3'],
+        "PO5": avg2,
+      });
+    }
+
   }
 
   if (TPGHMV002db['RESULTFORMAT'] === 'Number' ||
     TPGHMV002db['RESULTFORMAT'] === 'Text' ||
     TPGHMV002db['RESULTFORMAT'] === 'OCR' ||
-    TPGHMV002db['RESULTFORMAT'] === 'Picture') {
+    TPGHMV002db['RESULTFORMAT'] === 'Picture'|| TPGHMV002db['RESULTFORMAT'] === 'Graph') {
     request.post(
       'http://127.0.0.1:16000/FINISHtoDB',
       { json: TPGHMV002db },
