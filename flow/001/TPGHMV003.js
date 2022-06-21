@@ -21,6 +21,7 @@ let MAIN = 'MAIN';
 
 let PATTERN = 'PATTERN';
 let PATTERN_01 = 'PATTERN_01';
+let GRAPH_TABLE = 'GRAPH_TABLE';
 let master_FN = 'master_FN';
 let ITEMs = 'ITEMs';
 let METHOD = 'METHOD';
@@ -35,7 +36,7 @@ let TPGHMV003db = {
   "INS": NAME_INS,
   "PO": "",
   "CP": "",
-  "MATCP":  '',
+  "MATCP": '',
   "QTY": "",
   "PROCESS": "",
   "CUSLOT": "",
@@ -48,10 +49,10 @@ let TPGHMV003db = {
   //---new
   "QUANTITY": '',
   // "PROCESS": '',
-  "CUSLOTNO":'',
-  "FG_CHARG":'',
-  "PARTNAME_PO":'',
-  "PART_PO":'',
+  "CUSLOTNO": '',
+  "FG_CHARG": '',
+  "PARTNAME_PO": '',
+  "PART_PO": '',
   "CUSTNAME": '',
   //-------
   "ItemPick": [],
@@ -63,7 +64,10 @@ let TPGHMV003db = {
   "INTERSEC": "",
   "RESULTFORMAT": "",
   "GRAPHTYPE": "",
-  "GAP":"",
+  "GAP": "",
+  "GAPname": '',
+  "GAPnameList": [],
+  "GAPnameListdata": ['', '', '', '', '', '', '', '', '', '', '', '', '', '', ''],
   //---------
   "preview": [],
   "confirmdata": [],
@@ -77,6 +81,8 @@ let TPGHMV003db = {
   "value": [],  //key: PO1: itemname ,PO2:V01,PO3: V02,PO4: V03,PO5:V04,P06:INS,P9:NO.,P10:TYPE, last alway mean P01:"MEAN",PO2:V01,PO3:V02-MEAN,PO4: V03,PO5:V04-MEAN
   "dateupdatevalue": day,
 }
+
+
 
 router.get('/CHECK-TPGHMV003', async (req, res) => {
 
@@ -147,7 +153,7 @@ router.post('/GETINtoTPGHMV003', async (req, res) => {
         "INS": NAME_INS,
         "PO": input['PO'] || '',
         "CP": input['CP'] || '',
-        "MATCP":  input['CP'] || '',
+        "MATCP": input['CP'] || '',
         "QTY": dbsap['recordsets'][0][0]['QUANTITY'] || '',
         "PROCESS": dbsap['recordsets'][0][0]['PROCESS'] || '',
         "CUSLOT": dbsap['recordsets'][0][0]['CUSLOTNO'] || '',
@@ -158,13 +164,13 @@ router.post('/GETINtoTPGHMV003', async (req, res) => {
         "PARTNAME": dbsap['recordsets'][0][0]['PARTNAME'] || '',
         "MATERIAL": dbsap['recordsets'][0][0]['MATERIAL'] || '',
         //---new
-        "QUANTITY":dbsap['recordsets'][0][0]['QUANTITY'] || '',
+        "QUANTITY": dbsap['recordsets'][0][0]['QUANTITY'] || '',
         // "PROCESS":dbsap['recordsets'][0][0]['PROCESS'] || '',
-        "CUSLOTNO":dbsap['recordsets'][0][0]['CUSLOTNO'] || '',
-        "FG_CHARG":dbsap['recordsets'][0][0]['FG_CHARG'] || '',
-        "PARTNAME_PO":dbsap['recordsets'][0][0]['PARTNAME_PO'] || '',
-        "PART_PO":dbsap['recordsets'][0][0]['PART_PO'] || '',
-        "CUSTNAME":dbsap['recordsets'][0][0]['CUSTNAME'] || '',
+        "CUSLOTNO": dbsap['recordsets'][0][0]['CUSLOTNO'] || '',
+        "FG_CHARG": dbsap['recordsets'][0][0]['FG_CHARG'] || '',
+        "PARTNAME_PO": dbsap['recordsets'][0][0]['PARTNAME_PO'] || '',
+        "PART_PO": dbsap['recordsets'][0][0]['PART_PO'] || '',
+        "CUSTNAME": dbsap['recordsets'][0][0]['CUSTNAME'] || '',
         //----------------------
         "ItemPick": ItemPickoutP2, //---->
         "ItemPickcode": ItemPickcodeoutP2, //---->
@@ -175,7 +181,10 @@ router.post('/GETINtoTPGHMV003', async (req, res) => {
         "INTERSEC": "",
         "RESULTFORMAT": "",
         "GRAPHTYPE": "",
-        "GAP":"",
+        "GAP": "",
+        "GAPname": '',
+        "GAPnameList": [],
+        "GAPnameListdata": ['', '', '', '', '', '', '', '', '', '', '', '', '', '', ''],
         //----------------------
         "preview": [],
         "confirmdata": [],
@@ -249,10 +258,23 @@ router.post('/TPGHMV003-geteachITEM', async (req, res) => {
           //   "CONVERSE": findcp[0]['FINAL'][i]['CONVERSE'],
           // }]
 
+
+
+
+
+
+
           if (masterITEMs.length > 0) {
             //
             TPGHMV003db["RESULTFORMAT"] = masterITEMs[0]['RESULTFORMAT']
             TPGHMV003db["GRAPHTYPE"] = masterITEMs[0]['GRAPHTYPE']
+            //------------------------------------
+
+            let graph = await mongodb.find(PATTERN, GRAPH_TABLE, {});
+            TPGHMV003db['GAPnameList'] = [];
+            for (k = 0; k < graph.length; k++) {
+              TPGHMV003db['GAPnameList'].push(graph[k]['NO']);
+            }
           }
 
           for (j = 0; j < UNITdata.length; j++) {
@@ -261,11 +283,13 @@ router.post('/TPGHMV003-geteachITEM', async (req, res) => {
             }
           }
 
+          console.log(findcp[0]['FINAL'][i]['POINT']);
+
           TPGHMV003db["POINTs"] = findcp[0]['FINAL'][i]['POINT'];
           TPGHMV003db["PCS"] = findcp[0]['FINAL'][i]['PCS'];
           TPGHMV003db["PCSleft"] = findcp[0]['FINAL'][i]['PCS'];
 
-          TPGHMV003db["INTERSEC"] = "";
+          TPGHMV003db["INTERSEC"] = masterITEMs[0]['INTERSECTION'];
           output = 'OK';
           let findpo = await mongodb.find(MAIN_DATA, MAIN, { "PO": input['PO'] });
           if (findpo.length > 0) {
@@ -298,6 +322,20 @@ router.post('/TPGHMV003-geteachITEM', async (req, res) => {
 
   //-------------------------------------
   res.json(output);
+});
+
+router.post('/TPGHMV003-geteachGRAPH', async (req, res) => {
+  //-------------------------------------
+  console.log('--TPGHMV003-geteachGRAPH--');
+  console.log(req.body);
+  let input = req.body;
+  //-------------------------------------
+  let graph = await mongodb.find(PATTERN, GRAPH_TABLE, { "NO": input['GAPname'] });
+  console.log(graph);
+  TPGHMV003db['GAPnameListdata'] = graph[0];//confirmdata
+  TPGHMV003db['GAP'] = TPGHMV003db['GAPnameListdata'][`GT${TPGHMV003db['confirmdata'].length + 1}`]
+  //-------------------------------------
+  res.json('ok');
 });
 
 router.post('/TPGHMV003-preview', async (req, res) => {
@@ -338,10 +376,18 @@ router.post('/TPGHMV003-confirmdata', async (req, res) => {
   let output = 'NOK';
   //-------------------------------------
   try {
-
     let datapush = TPGHMV003db['preview'][0]
 
     if (TPGHMV003db['RESULTFORMAT'] === 'Graph') {
+      let pushdata = TPGHMV003db['preview'][0]
+
+      pushdata['V5'] = TPGHMV003db['GAP'];
+      pushdata['V1'] = `${TPGHMV003db['confirmdata'].length + 1}:${pushdata['V1']}`;
+
+      TPGHMV003db['confirmdata'].push(pushdata);
+      TPGHMV003db['preview'] = [];
+      output = 'OK';
+      TPGHMV003db['GAP'] = TPGHMV003db['GAPnameListdata'][`GT${TPGHMV003db['confirmdata'].length + 1}`]
 
     } else if (TPGHMV003db['RESULTFORMAT'] === 'Number') {
 
@@ -354,11 +400,6 @@ router.post('/TPGHMV003-confirmdata', async (req, res) => {
       TPGHMV003db['preview'] = [];
       output = 'OK';
     }
-
-
-
-
-
   }
   catch (err) {
     output = 'NOK';
@@ -386,27 +427,28 @@ router.post('/TPGHMV003-feedback', async (req, res) => {
       let ob = feedback[0]['FINAL'][NAME_INS][input["ITEMs"]];
 
 
-
       let LISTbuffer = [];
       let ITEMleftVALUEout = [];
+
       for (i = 0; i < oblist.length; i++) {
         LISTbuffer.push(...ob[oblist[i]])
       }
       TPGHMV003db["PCSleft"] = `${parseInt(TPGHMV003db["PCS"]) - oblist.length}`;
-      if (TPGHMV003db['RESULTFORMAT'] === 'Number' || TPGHMV003db['RESULTFORMAT'] === 'Text') {
-
+      if (TPGHMV003db['RESULTFORMAT'] === 'Number' || TPGHMV003db['RESULTFORMAT'] === 'Text' || TPGHMV003db['RESULTFORMAT'] === 'Graph') {
         for (i = 0; i < LISTbuffer.length; i++) {
           if (LISTbuffer[i]['PO1'] === 'Mean') {
-            ITEMleftVALUEout.push({ "V1": 'Mean', "V2": `${LISTbuffer[i]['PO3']}` });
+            ITEMleftVALUEout.push({ "V1": 'Mean', "V2": `${LISTbuffer[i]['PO3']}` })
           } else {
-            ITEMleftVALUEout.push({ "V1": `${LISTbuffer[i]['PO2']}`, "V2": `${LISTbuffer[i]['PO3']}` });
+            ITEMleftVALUEout.push({ "V1": `${LISTbuffer[i]['PO2']}`, "V2": `${LISTbuffer[i]['PO3']}` })
           }
+
         }
-        // output = 'OK';
-        // console.log(LISTbuffer);
-        
+
+
         TPGHMV003db["ITEMleftUNIT"] = [{ "V1": "FINAL", "V2": `${oblist.length}` }];
         TPGHMV003db["ITEMleftVALUE"] = ITEMleftVALUEout;
+
+      } else {
 
       }
       // output = 'OK';
@@ -420,7 +462,6 @@ router.post('/TPGHMV003-feedback', async (req, res) => {
             break;
           }
         }
-
         //input["ITEMs"] 
         let masterITEMs = await mongodb.find(master_FN, ITEMs, { "masterID": input["ITEMs"] });
 
@@ -456,9 +497,110 @@ router.post('/TPGHMV003-feedback', async (req, res) => {
 
           } else if (masterITEMs[0]['RESULTFORMAT'] === 'Graph') {
 
-          } else if (masterITEMs[0]['RESULTFORMAT'] === 'Picture') {
+            if (TPGHMV003db['GRAPHTYPE'] == 'CDE') {
 
+              //
+              let axis_data = [];
+              for (i = 0; i < LISTbuffer.length; i++) {
+                if (LISTbuffer[i]['PO1'] !== 'Mean') {
+                  axis_data.push({ x: parseFloat(LISTbuffer[i].PO8), y: parseFloat(LISTbuffer[i].PO3) });
+                }
+              }
+              //-----------------core
+
+              let INTERSECTION = TPGHMV003db['INTERSEC'];
+              core = parseFloat(INTERSECTION)
+
+              //-----------------core
+              let RawPoint = [];
+              for (i = 0; i < axis_data.length - 1; i++) {
+                if (core <= axis_data[i].y && core >= axis_data[i + 1].y) {
+                  RawPoint.push({ Point1: axis_data[i], Point2: axis_data[i + 1] });
+                  break
+                }
+              }
+
+              let pointvalue = RawPoint[0].Point2.x - RawPoint[0].Point1.x;
+              let data2 = RawPoint[0].Point1.y - core;
+              let data3 = RawPoint[0].Point1.y - RawPoint[0].Point2.y;
+
+              let RawData = RawPoint[0].Point1.x + (data2 / data3 * pointvalue);
+              let graph_ans_X = parseFloat(RawData.toFixed(2));
+
+              feedback[0]['FINAL_ANS'][input["ITEMs"]] = graph_ans_X;
+              feedback[0]['FINAL_ANS'][`${input["ITEMs"]}_point`] = { "x": graph_ans_X, "y": core };
+
+              let feedbackupdateRESULTFORMAT = await mongodb.update(MAIN_DATA, MAIN, { "PO": input['PO'] }, { "$set": { 'FINAL_ANS': feedback[0]['FINAL_ANS'] } });
+
+
+              //
+            } else if (TPGHMV003db['GRAPHTYPE'] == 'CDE') {
+              let axis_data = [];
+              for (i = 0; i < LISTbuffer.length; i++) {
+                if (LISTbuffer[i]['PO1'] !== 'Mean') {
+                  axis_data.push({ x: parseFloat(LISTbuffer[i].PO8), y: parseFloat(LISTbuffer[i].PO3) });
+                }
+              }
+
+              let d = []
+              for (i = 0; i < axis_data.length - 1; i++) {
+                d.push((axis_data[i].y - axis_data[i + 1].y) / (axis_data[i + 1].x - axis_data[i].x));
+              }
+
+              let def = []
+
+              for (i = 0; i < d.length - 1; i++) {
+                if (d[i] > d[i + 1]) {
+                  def[i] = (d[i] - d[i + 1])
+                } else {
+                  def[i] = (d[i + 1] - d[i])
+                }
+
+              }
+
+              for (j = 0; j < def.length; j++) {
+                if (def[j] === Math.max(...def)) {
+                  pos = [j + 1, j + 2]
+                }
+              }
+
+              let d1 = -d[pos[0] - 1]
+              let d2 = -d[pos[1]]
+
+
+              let c1 = (axis_data[pos[0]].y - d1 * axis_data[pos[0]].x);
+              let c2 = (axis_data[pos[1]].y - d2 * axis_data[pos[1]].x);
+
+              
+              let Xans = 0;
+              let Yans = 0;
+              let x = (c[1] - c[0]) / (d1 - d2);
+              
+
+              if (x >= 0) {
+                Xans = x
+              } else {
+                Xans = -x
+              }
+
+              y = d1 * Xans + c[0]
+              Yans = y
+
+              let graph_ans_X = parseFloat(Xans.toFixed(2));
+              let graph_ans_Y = parseFloat(Yans.toFixed(2));
+
+              feedback[0]['FINAL_ANS'][input["ITEMs"]] = graph_ans_X;
+              feedback[0]['FINAL_ANS'][`${input["ITEMs"]}_point`] = { "x": graph_ans_X, "y": graph_ans_Y };
+
+              let feedbackupdateRESULTFORMAT = await mongodb.update(MAIN_DATA, MAIN, { "PO": input['PO'] }, { "$set": { 'FINAL_ANS': feedback[0]['FINAL_ANS'] } });
+
+
+            }
+
+          } else if (masterITEMs[0]['RESULTFORMAT'] === 'Picture') {
+            //
           } else if (masterITEMs[0]['RESULTFORMAT'] === 'OCR') {
+            //
 
           } else {
 
@@ -469,17 +611,17 @@ router.post('/TPGHMV003-feedback', async (req, res) => {
 
         for (i = 0; i < feedback[0]['CHECKlist'].length; i++) {
           if (feedback[0]['CHECKlist'][i]['FINISH'] !== undefined) {
-            if(feedback[0]['CHECKlist'][i]['FINISH'] === 'OK'){
+            if (feedback[0]['CHECKlist'][i]['FINISH'] === 'OK') {
               CHECKlistdataFINISH.push(feedback[0]['CHECKlist'][i]['key'])
-            }else{
+            } else {
             }
           }
         }
 
-        if(CHECKlistdataFINISH.length === feedback[0]['CHECKlist'].length){
+        if (CHECKlistdataFINISH.length === feedback[0]['CHECKlist'].length) {
           // feedback[0]['FINAL_ANS']["ALL_DONE"] = "DONE";
           // feedback[0]['FINAL_ANS']["PO_judgment"] ="pass";
-          let feedbackupdateFINISH = await mongodb.update(MAIN_DATA, MAIN, { "PO": input['PO'] }, { "$set": { "ALL_DONE": "DONE" , "PO_judgment": "pass" ,} });
+          let feedbackupdateFINISH = await mongodb.update(MAIN_DATA, MAIN, { "PO": input['PO'] }, { "$set": { "ALL_DONE": "DONE", "PO_judgment": "pass", } });
         }
 
       }
@@ -508,7 +650,7 @@ router.post('/TPGHMV003-SETZERO', async (req, res) => {
       "INS": NAME_INS,
       "PO": "",
       "CP": "",
-      "MATCP":  '',
+      "MATCP": '',
       "QTY": "",
       "PROCESS": "",
       "CUSLOT": "",
@@ -522,10 +664,10 @@ router.post('/TPGHMV003-SETZERO', async (req, res) => {
       //---new
       "QUANTITY": '',
       // "PROCESS": '',
-      "CUSLOTNO":'',
-      "FG_CHARG":'',
-      "PARTNAME_PO":'',
-      "PART_PO":'',
+      "CUSLOTNO": '',
+      "FG_CHARG": '',
+      "PARTNAME_PO": '',
+      "PART_PO": '',
       "CUSTNAME": '',
       //-----
       "ItemPick": [],
@@ -536,7 +678,10 @@ router.post('/TPGHMV003-SETZERO', async (req, res) => {
       "INTERSEC": "",
       "RESULTFORMAT": "",
       "GRAPHTYPE": "",
-      "GAP":"",
+      "GAP": "",
+      "GAPname": '',
+      "GAPnameList": [],
+      "GAPnameListdata": ['', '', '', '', '', '', '', '', '', '', '', '', '', '', ''],
       //---------
       "preview": [],
       "confirmdata": [],
@@ -615,6 +760,7 @@ router.post('/TPGHMV003-FINISH', async (req, res) => {
   let input = req.body;
   //-------------------------------------
   let output = 'OK';
+
   if (TPGHMV003db['RESULTFORMAT'] === 'Number' || TPGHMV003db['RESULTFORMAT'] === 'Text') {
 
     TPGHMV003db["value"] = [];
@@ -627,7 +773,7 @@ router.post('/TPGHMV003-FINISH', async (req, res) => {
         "PO5": TPGHMV003db['confirmdata'][i]['V4'],
         "PO6": "-",
         "PO7": "-",
-        "PO8": "-",
+        "PO8": '-',
         "PO9": i + 1,
         "PO10": "AUTO",
       });
@@ -651,16 +797,52 @@ router.post('/TPGHMV003-FINISH', async (req, res) => {
         "PO5": avg2,
       });
     }
+
   } else if (TPGHMV003db['RESULTFORMAT'] === 'OCR' || TPGHMV003db['RESULTFORMAT'] === 'Picture') {
 
   } else if (TPGHMV003db['RESULTFORMAT'] === 'Graph') {
+
+    TPGHMV003db["value"] = [];
+    for (i = 0; i < TPGHMV003db['confirmdata'].length; i++) {
+      TPGHMV003db["value"].push({
+        "PO1": TPGHMV003db["inspectionItemNAME"],
+        "PO2": TPGHMV003db['confirmdata'][i]['V1'],
+        "PO3": TPGHMV003db['confirmdata'][i]['V2'],
+        "PO4": TPGHMV003db['confirmdata'][i]['V3'],
+        "PO5": TPGHMV003db['confirmdata'][i]['V4'],
+        "PO6": "-",
+        "PO7": "-",
+        "PO8": TPGHMV003db['confirmdata'][i]['V5'],
+        "PO9": i + 1,
+        "PO10": "AUTO",
+      });
+    }
+    if (TPGHMV003db["value"].length > 0) {
+      let mean01 = [];
+      let mean02 = [];
+      for (i = 0; i < TPGHMV003db["value"].length; i++) {
+        mean01.push(parseFloat(TPGHMV003db["value"][i]["PO3"]));
+        mean02.push(parseFloat(TPGHMV003db["value"][i]["PO5"]));
+      }
+      let sum1 = mean01.reduce((a, b) => a + b, 0);
+      let avg1 = (sum1 / mean01.length) || 0;
+      let sum2 = mean02.reduce((a, b) => a + b, 0);
+      let avg2 = (sum2 / mean02.length) || 0;
+      TPGHMV003db["value"].push({
+        "PO1": 'Mean',
+        "PO2": TPGHMV003db['confirmdata'][0]['V1'],
+        "PO3": avg1,
+        "PO4": TPGHMV003db['confirmdata'][0]['V3'],
+        "PO5": avg2,
+      });
+    }
 
   }
 
   if (TPGHMV003db['RESULTFORMAT'] === 'Number' ||
     TPGHMV003db['RESULTFORMAT'] === 'Text' ||
     TPGHMV003db['RESULTFORMAT'] === 'OCR' ||
-    TPGHMV003db['RESULTFORMAT'] === 'Picture') {
+    TPGHMV003db['RESULTFORMAT'] === 'Picture' || TPGHMV003db['RESULTFORMAT'] === 'Graph') {
     request.post(
       'http://127.0.0.1:16000/FINISHtoDB',
       { json: TPGHMV003db },
@@ -692,10 +874,10 @@ router.post('/TPGHMV003-FINISH', async (req, res) => {
       }
     );
   }
-
   //-------------------------------------
   res.json(TPGHMV003db);
 });
+
 
 
 module.exports = router;
