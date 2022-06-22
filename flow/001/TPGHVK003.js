@@ -508,8 +508,13 @@ router.post('/TPGHVK003-feedback', async (req, res) => {
               }
               //-----------------core
 
-              let INTERSECTION = TPGHVK003db['INTERSEC'];
-              core = parseFloat(INTERSECTION)
+
+              let core = 0;
+              if(TPGHVK003db['INTERSEC'] !== ''){
+                core = parseFloat(TPGHVK003db['INTERSEC'])
+              }else{
+                core = parseFloat(axis_data[axis_data.length-1]['y'])
+              }
 
               //-----------------core
               let RawPoint = [];

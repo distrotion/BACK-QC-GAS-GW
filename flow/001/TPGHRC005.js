@@ -508,8 +508,12 @@ router.post('/TPGHRC005-feedback', async (req, res) => {
               }
               //-----------------core
 
-              let INTERSECTION = TPGHRC005db['INTERSEC'];
-              core = parseFloat(INTERSECTION)
+              let core = 0;
+              if(TPGHRC005db['INTERSEC'] !== ''){
+                core = parseFloat(TPGHRC005db['INTERSEC'])
+              }else{
+                core = parseFloat(axis_data[axis_data.length-1]['y'])
+              }
 
               //-----------------core
               let RawPoint = [];
