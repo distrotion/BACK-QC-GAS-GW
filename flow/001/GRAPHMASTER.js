@@ -62,7 +62,7 @@ router.post('/GRAPH-STD-UPDATE', async (req, res) => {
   output = await mongodb.find(PATTERN, GRAPH_TABLE, {});
 
   //-------------------------------------
-  res.json(output);
+  return  res.json(output);
 });
 
 router.post('/GRAPH-STD-GET', async (req, res) => {
@@ -75,7 +75,7 @@ router.post('/GRAPH-STD-GET', async (req, res) => {
 
   let output = graph;
   //-------------------------------------
-  res.json(output);
+  return  res.json(output);
 });
 
 

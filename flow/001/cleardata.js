@@ -10,7 +10,7 @@ let mongodb = require('../../function/mongodb');
 router.get('/checklist', async (req, res) => {
 
   let output = [];
-  res.json(output);
+  return  res.json(output);
 
 });
 

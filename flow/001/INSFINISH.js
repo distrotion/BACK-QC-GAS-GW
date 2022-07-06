@@ -215,7 +215,7 @@ router.post('/FINISHtoDB', async (req, res) => {
 
   }
   //-------------------------------------
-  res.json(outputs);
+  return  res.json(outputs);
 });
 
 router.post('/FINISHtoDB-apr', async (req, res) => {
@@ -411,7 +411,7 @@ router.post('/FINISHtoDB-apr', async (req, res) => {
 
   }
   //-------------------------------------
-  res.json(outputs);
+  return  res.json(outputs);
 });
 
 

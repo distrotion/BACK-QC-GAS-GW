@@ -80,7 +80,7 @@ let APPGASGWdb = {
 
 router.get('/CHECK-APPGASGW', async (req, res) => {
 
-  res.json(APPGASGWdb['PO']);
+  return  res.json(APPGASGWdb['PO']);
 });
 
 
@@ -99,7 +99,7 @@ router.post('/APPGASGWdb', async (req, res) => {
     finddb = finddbbuffer;
   }
   //-------------------------------------
-  res.json(finddb);
+  return  res.json(finddb);
 });
 
 router.post('/GETINtoAPPGASGW', async (req, res) => {
@@ -199,7 +199,7 @@ router.post('/GETINtoAPPGASGW', async (req, res) => {
 
 
   //-------------------------------------
-  res.json(output);
+  return  res.json(output);
 });
 
 router.post('/APPGASGW-geteachITEM', async (req, res) => {
@@ -301,7 +301,7 @@ router.post('/APPGASGW-geteachITEM', async (req, res) => {
   }
 
   //-------------------------------------
-  res.json(output);
+  return  res.json(output);
 });
 
 router.post('/APPGASGW-preview', async (req, res) => {
@@ -333,7 +333,7 @@ router.post('/APPGASGW-preview', async (req, res) => {
 
 
   //-------------------------------------
-  res.json(output);
+  return  res.json(output);
 });
 
 router.post('/APPGASGW-confirmdata', async (req, res) => {
@@ -365,7 +365,7 @@ router.post('/APPGASGW-confirmdata', async (req, res) => {
     output = 'NOK';
   }
   //-------------------------------------
-  res.json(output);
+  return  res.json(output);
 });
 
 
@@ -493,7 +493,7 @@ router.post('/APPGASGW-feedback', async (req, res) => {
   }
 
   //-------------------------------------
-  res.json(output);
+  return  res.json(output);
 });
 
 router.post('/APPGASGW-SETZERO', async (req, res) => {
@@ -558,7 +558,7 @@ router.post('/APPGASGW-SETZERO', async (req, res) => {
     output = 'NOK';
   }
   //-------------------------------------
-  res.json(output);
+  return  res.json(output);
 });
 
 router.post('/APPGASGW-CLEAR', async (req, res) => {
@@ -580,7 +580,7 @@ router.post('/APPGASGW-CLEAR', async (req, res) => {
     output = 'NOK';
   }
   //-------------------------------------
-  res.json(output);
+  return  res.json(output);
 });
 
 router.post('/APPGASGW-RESETVALUE', async (req, res) => {
@@ -604,7 +604,7 @@ router.post('/APPGASGW-RESETVALUE', async (req, res) => {
     output = 'NOK';
   }
   //-------------------------------------
-  res.json(output);
+  return  res.json(output);
 });
 
 //"value":[],  //key: PO1: itemname ,PO2:V01,PO3: V02,PO4: V03,PO5:V04,P06:INS,P9:NO.,P10:TYPE, last alway mean P01:"MEAN",PO2:V01,PO3:V02-MEAN,PO4: V03,PO5:V04-MEAN
@@ -699,7 +699,7 @@ router.post('/APPGASGW-FINISH', async (req, res) => {
   }
 
   //-------------------------------------
-  res.json(APPGASGWdb);
+  return  res.json(APPGASGWdb);
 });
 
 
@@ -766,7 +766,7 @@ router.post('/APPGASGW-FINISH-APR', async (req, res) => {
 
 
   //-------------------------------------
-  res.json(output);
+  return  res.json(output);
 });
 
 

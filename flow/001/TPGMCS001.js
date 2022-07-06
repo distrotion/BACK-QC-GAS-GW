@@ -80,7 +80,7 @@ let TPGMCS001db = {
 
 router.get('/CHECK-TPGMCS001', async (req, res) => {
 
-  res.json(TPGMCS001db['PO']);
+   return  res.json(TPGMCS001db['PO']);
 });
 
 
@@ -99,7 +99,7 @@ router.post('/TPGMCS001db', async (req, res) => {
     finddb = finddbbuffer;
   }
   //-------------------------------------
-  res.json(finddb);
+  return  res.json(finddb);
 });
 
 router.post('/GETINtoTPGMCS001', async (req, res) => {
@@ -199,7 +199,7 @@ router.post('/GETINtoTPGMCS001', async (req, res) => {
 
 
   //-------------------------------------
-  res.json(output);
+  return  res.json(output);
 });
 
 router.post('/TPGMCS001-geteachITEM', async (req, res) => {
@@ -299,7 +299,7 @@ router.post('/TPGMCS001-geteachITEM', async (req, res) => {
   }
 
   //-------------------------------------
-  res.json(output);
+  return  res.json(output);
 });
 
 router.post('/TPGMCS001-preview', async (req, res) => {
@@ -331,7 +331,7 @@ router.post('/TPGMCS001-preview', async (req, res) => {
 
 
   //-------------------------------------
-  res.json(output);
+  return  res.json(output);
 });
 
 router.post('/TPGMCS001-confirmdata', async (req, res) => {
@@ -363,7 +363,7 @@ router.post('/TPGMCS001-confirmdata', async (req, res) => {
     output = 'NOK';
   }
   //-------------------------------------
-  res.json(output);
+  return  res.json(output);
 });
 
 
@@ -503,7 +503,7 @@ router.post('/TPGMCS001-feedback', async (req, res) => {
   }
 
   //-------------------------------------
-  res.json(output);
+  return  res.json(output);
 });
 
 router.post('/TPGMCS001-SETZERO', async (req, res) => {
@@ -568,7 +568,7 @@ router.post('/TPGMCS001-SETZERO', async (req, res) => {
     output = 'NOK';
   }
   //-------------------------------------
-  res.json(output);
+  return  res.json(output);
 });
 
 router.post('/TPGMCS001-CLEAR', async (req, res) => {
@@ -590,7 +590,7 @@ router.post('/TPGMCS001-CLEAR', async (req, res) => {
     output = 'NOK';
   }
   //-------------------------------------
-  res.json(output);
+  return  res.json(output);
 });
 
 router.post('/TPGMCS001-RESETVALUE', async (req, res) => {
@@ -614,7 +614,7 @@ router.post('/TPGMCS001-RESETVALUE', async (req, res) => {
     output = 'NOK';
   }
   //-------------------------------------
-  res.json(output);
+  return  res.json(output);
 });
 
 //"value":[],  //key: PO1: itemname ,PO2:V01,PO3: V02,PO4: V03,PO5:V04,P06:INS,P9:NO.,P10:TYPE, last alway mean P01:"MEAN",PO2:V01,PO3:V02-MEAN,PO4: V03,PO5:V04-MEAN
@@ -706,7 +706,7 @@ router.post('/TPGMCS001-FINISH', async (req, res) => {
   }
 
   //-------------------------------------
-  res.json(TPGMCS001db);
+  return  res.json(TPGMCS001db);
 });
 
 
@@ -775,7 +775,7 @@ router.post('/TPGMCS001-FINISH-APR', async (req, res) => {
 
 
   //-------------------------------------
-  res.json(output);
+  return  res.json(output);
 });
 
 router.post('/TPGMCS001-FINISH-APR', async (req, res) => {
@@ -845,7 +845,7 @@ router.post('/TPGMCS001-FINISH-APR', async (req, res) => {
 
 
   //-------------------------------------
-  res.json(output);
+  return  res.json(output);
 });
 
 
@@ -911,7 +911,7 @@ router.post('/TPGMCS001-FINISH-IMG', async (req, res) => {
   }
 
   //-------------------------------------
-  res.json(output);
+  return  res.json(output);
 });
 
 module.exports = router;

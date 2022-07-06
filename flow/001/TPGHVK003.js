@@ -86,7 +86,7 @@ let TPGHVK003db = {
 
 router.get('/CHECK-TPGHVK003', async (req, res) => {
 
-  res.json(TPGHVK003db['PO']);
+  return  res.json(TPGHVK003db['PO']);
 });
 
 
@@ -105,7 +105,7 @@ router.post('/TPGHVK003db', async (req, res) => {
     finddb = finddbbuffer;
   }
   //-------------------------------------
-  res.json(finddb);
+  return  res.json(finddb);
 });
 
 router.post('/GETINtoTPGHVK003', async (req, res) => {
@@ -208,7 +208,7 @@ router.post('/GETINtoTPGHVK003', async (req, res) => {
 
 
   //-------------------------------------
-  res.json(output);
+  return  res.json(output);
 });
 
 router.post('/TPGHVK003-geteachITEM', async (req, res) => {
@@ -321,7 +321,7 @@ router.post('/TPGHVK003-geteachITEM', async (req, res) => {
   }
 
   //-------------------------------------
-  res.json(output);
+  return  res.json(output);
 });
 
 router.post('/TPGHVK003-geteachGRAPH', async (req, res) => {
@@ -335,7 +335,7 @@ router.post('/TPGHVK003-geteachGRAPH', async (req, res) => {
   TPGHVK003db['GAPnameListdata'] = graph[0];//confirmdata
   TPGHVK003db['GAP'] = TPGHVK003db['GAPnameListdata'][`GT${TPGHVK003db['confirmdata'].length + 1}`]
   //-------------------------------------
-  res.json('ok');
+  return  res.json('ok');
 });
 
 router.post('/TPGHVK003-preview', async (req, res) => {
@@ -364,7 +364,7 @@ router.post('/TPGHVK003-preview', async (req, res) => {
     output = 'clear';
   }
   //-------------------------------------
-  res.json(output);
+  return  res.json(output);
 });
 
 router.post('/TPGHVK003-confirmdata', async (req, res) => {
@@ -405,7 +405,7 @@ router.post('/TPGHVK003-confirmdata', async (req, res) => {
     output = 'NOK';
   }
   //-------------------------------------
-  res.json(output);
+  return  res.json(output);
 });
 
 
@@ -638,7 +638,7 @@ router.post('/TPGHVK003-feedback', async (req, res) => {
   }
 
   //-------------------------------------
-  res.json(output);
+  return  res.json(output);
 });
 
 router.post('/TPGHVK003-SETZERO', async (req, res) => {
@@ -706,7 +706,7 @@ router.post('/TPGHVK003-SETZERO', async (req, res) => {
     output = 'NOK';
   }
   //-------------------------------------
-  res.json(output);
+  return  res.json(output);
 });
 
 router.post('/TPGHVK003-CLEAR', async (req, res) => {
@@ -728,7 +728,7 @@ router.post('/TPGHVK003-CLEAR', async (req, res) => {
     output = 'NOK';
   }
   //-------------------------------------
-  res.json(output);
+  return  res.json(output);
 });
 
 router.post('/TPGHVK003-RESETVALUE', async (req, res) => {
@@ -752,7 +752,7 @@ router.post('/TPGHVK003-RESETVALUE', async (req, res) => {
     output = 'NOK';
   }
   //-------------------------------------
-  res.json(output);
+  return  res.json(output);
 });
 
 //"value":[],  //key: PO1: itemname ,PO2:V01,PO3: V02,PO4: V03,PO5:V04,P06:INS,P9:NO.,P10:TYPE, last alway mean P01:"MEAN",PO2:V01,PO3:V02-MEAN,PO4: V03,PO5:V04-MEAN
@@ -880,7 +880,7 @@ router.post('/TPGHVK003-FINISH', async (req, res) => {
     );
   }
   //-------------------------------------
-  res.json(TPGHVK003db);
+  return  res.json(TPGHVK003db);
 });
 
 

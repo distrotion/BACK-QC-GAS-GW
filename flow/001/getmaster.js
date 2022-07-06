@@ -29,7 +29,7 @@ router.post('/getmaster', async (req, res) => {
 
 
   //-------------------------------------
-  res.json(output);
+  return  res.json(output);
 });
 
 router.post('/GETINSset', async (req, res) => {
@@ -136,7 +136,7 @@ router.post('/GETINSset', async (req, res) => {
 
 
   //-------------------------------------
-  res.json(INSLISTans);
+  return  res.json(INSLISTans);
 });
 
 //         "PO": "",

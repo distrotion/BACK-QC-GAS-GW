@@ -20,7 +20,7 @@ router.post('/upqcdata',async (req,res) => {
     
     
     //-------------------------------------
-      res.json(output);
+      return  res.json(output);
 });
 
 

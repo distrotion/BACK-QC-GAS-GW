@@ -14,7 +14,7 @@ let MAIN = 'MAIN';
 
 router.get('/flow001', async (req, res) => {
 
-  res.json("testflow1");
+  return  res.json("testflow1");
 });
 
 router.post('/sap', async (req, res) => {
@@ -50,7 +50,7 @@ router.post('/sap', async (req, res) => {
 
   }
   //-------------------------------------
-  res.json(output);
+  return  res.json(output);
 });
 
 router.post('/sapdummy', async (req, res) => {
@@ -62,7 +62,7 @@ router.post('/sapdummy', async (req, res) => {
   var output = datadummy;
 
   //-------------------------------------
-  res.json(output);
+  return  res.json(output);
 });
 
 router.get('/testmongo', async (req, res) => {
@@ -74,7 +74,7 @@ router.get('/testmongo', async (req, res) => {
   let getdata = await mongodb.findsome(MAIN_DATA, MAIN,{});
 
   //-------------------------------------
-  res.json(getdata);
+  return  res.json(getdata);
 });
 
 
