@@ -86,7 +86,7 @@ let TPGHRC005db = {
 
 router.get('/CHECK-TPGHRC005', async (req, res) => {
 
-  return  res.json(TPGHRC005db['PO']);
+  return res.json(TPGHRC005db['PO']);
 });
 
 
@@ -105,7 +105,7 @@ router.post('/TPGHRC005db', async (req, res) => {
     finddb = finddbbuffer;
   }
   //-------------------------------------
-  return  res.json(finddb);
+  return res.json(finddb);
 });
 
 router.post('/GETINtoTPGHRC005', async (req, res) => {
@@ -208,7 +208,7 @@ router.post('/GETINtoTPGHRC005', async (req, res) => {
 
 
   //-------------------------------------
-  return  res.json(output);
+  return res.json(output);
 });
 
 router.post('/TPGHRC005-geteachITEM', async (req, res) => {
@@ -321,7 +321,7 @@ router.post('/TPGHRC005-geteachITEM', async (req, res) => {
   }
 
   //-------------------------------------
-  return  res.json(output);
+  return res.json(output);
 });
 
 router.post('/TPGHRC005-geteachGRAPH', async (req, res) => {
@@ -330,12 +330,17 @@ router.post('/TPGHRC005-geteachGRAPH', async (req, res) => {
   console.log(req.body);
   let input = req.body;
   //-------------------------------------
-  let graph = await mongodb.find(PATTERN, GRAPH_TABLE, { "NO": input['GAPname'] });
-  console.log(graph);
-  TPGHRC005db['GAPnameListdata'] = graph[0];//confirmdata
-  TPGHRC005db['GAP'] = TPGHRC005db['GAPnameListdata'][`GT${TPGHRC005db['confirmdata'].length + 1}`]
+  try {
+    let graph = await mongodb.find(PATTERN, GRAPH_TABLE, { "NO": input['GAPname'] });
+    console.log(graph);
+    TPGHRC005db['GAPnameListdata'] = graph[0];//confirmdata
+    TPGHRC005db['GAP'] = TPGHRC005db['GAPnameListdata'][`GT${TPGHRC005db['confirmdata'].length + 1}`]
+  }
+  catch (err) {
+
+  }
   //-------------------------------------
-  return  res.json('ok');
+  return res.json('ok');
 });
 
 router.post('/TPGHRC005-preview', async (req, res) => {
@@ -364,7 +369,7 @@ router.post('/TPGHRC005-preview', async (req, res) => {
     output = 'clear';
   }
   //-------------------------------------
-  return  res.json(output);
+  return res.json(output);
 });
 
 router.post('/TPGHRC005-confirmdata', async (req, res) => {
@@ -405,7 +410,7 @@ router.post('/TPGHRC005-confirmdata', async (req, res) => {
     output = 'NOK';
   }
   //-------------------------------------
-  return  res.json(output);
+  return res.json(output);
 });
 
 
@@ -509,10 +514,10 @@ router.post('/TPGHRC005-feedback', async (req, res) => {
               //-----------------core
 
               let core = 0;
-              if(TPGHRC005db['INTERSEC'] !== ''){
+              if (TPGHRC005db['INTERSEC'] !== '') {
                 core = parseFloat(TPGHRC005db['INTERSEC'])
-              }else{
-                core = parseFloat(axis_data[axis_data.length-1]['y'])
+              } else {
+                core = parseFloat(axis_data[axis_data.length - 1]['y'])
               }
 
               //-----------------core
@@ -575,11 +580,11 @@ router.post('/TPGHRC005-feedback', async (req, res) => {
               let c1 = (axis_data[pos[0]].y - d1 * axis_data[pos[0]].x);
               let c2 = (axis_data[pos[1]].y - d2 * axis_data[pos[1]].x);
 
-              
+
               let Xans = 0;
               let Yans = 0;
               let x = (c[1] - c[0]) / (d1 - d2);
-              
+
 
               if (x >= 0) {
                 Xans = x
@@ -637,7 +642,7 @@ router.post('/TPGHRC005-feedback', async (req, res) => {
   }
 
   //-------------------------------------
-  return  res.json(output);
+  return res.json(output);
 });
 
 router.post('/TPGHRC005-SETZERO', async (req, res) => {
@@ -705,7 +710,7 @@ router.post('/TPGHRC005-SETZERO', async (req, res) => {
     output = 'NOK';
   }
   //-------------------------------------
-  return  res.json(output);
+  return res.json(output);
 });
 
 router.post('/TPGHRC005-CLEAR', async (req, res) => {
@@ -727,7 +732,7 @@ router.post('/TPGHRC005-CLEAR', async (req, res) => {
     output = 'NOK';
   }
   //-------------------------------------
-  return  res.json(output);
+  return res.json(output);
 });
 
 router.post('/TPGHRC005-RESETVALUE', async (req, res) => {
@@ -751,7 +756,7 @@ router.post('/TPGHRC005-RESETVALUE', async (req, res) => {
     output = 'NOK';
   }
   //-------------------------------------
-  return  res.json(output);
+  return res.json(output);
 });
 
 //"value":[],  //key: PO1: itemname ,PO2:V01,PO3: V02,PO4: V03,PO5:V04,P06:INS,P9:NO.,P10:TYPE, last alway mean P01:"MEAN",PO2:V01,PO3:V02-MEAN,PO4: V03,PO5:V04-MEAN
@@ -879,7 +884,7 @@ router.post('/TPGHRC005-FINISH', async (req, res) => {
     );
   }
   //-------------------------------------
-  return  res.json(TPGHRC005db);
+  return res.json(TPGHRC005db);
 });
 
 

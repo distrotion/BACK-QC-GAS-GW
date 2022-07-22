@@ -86,7 +86,7 @@ let TPGHVK003db = {
 
 router.get('/CHECK-TPGHVK003', async (req, res) => {
 
-  return  res.json(TPGHVK003db['PO']);
+  return res.json(TPGHVK003db['PO']);
 });
 
 
@@ -105,7 +105,7 @@ router.post('/TPGHVK003db', async (req, res) => {
     finddb = finddbbuffer;
   }
   //-------------------------------------
-  return  res.json(finddb);
+  return res.json(finddb);
 });
 
 router.post('/GETINtoTPGHVK003', async (req, res) => {
@@ -208,7 +208,7 @@ router.post('/GETINtoTPGHVK003', async (req, res) => {
 
 
   //-------------------------------------
-  return  res.json(output);
+  return res.json(output);
 });
 
 router.post('/TPGHVK003-geteachITEM', async (req, res) => {
@@ -321,7 +321,7 @@ router.post('/TPGHVK003-geteachITEM', async (req, res) => {
   }
 
   //-------------------------------------
-  return  res.json(output);
+  return res.json(output);
 });
 
 router.post('/TPGHVK003-geteachGRAPH', async (req, res) => {
@@ -330,12 +330,17 @@ router.post('/TPGHVK003-geteachGRAPH', async (req, res) => {
   console.log(req.body);
   let input = req.body;
   //-------------------------------------
-  let graph = await mongodb.find(PATTERN, GRAPH_TABLE, { "NO": input['GAPname'] });
-  console.log(graph);
-  TPGHVK003db['GAPnameListdata'] = graph[0];//confirmdata
-  TPGHVK003db['GAP'] = TPGHVK003db['GAPnameListdata'][`GT${TPGHVK003db['confirmdata'].length + 1}`]
+  try {
+    let graph = await mongodb.find(PATTERN, GRAPH_TABLE, { "NO": input['GAPname'] });
+    console.log(graph);
+    TPGHVK003db['GAPnameListdata'] = graph[0];//confirmdata
+    TPGHVK003db['GAP'] = TPGHVK003db['GAPnameListdata'][`GT${TPGHVK003db['confirmdata'].length + 1}`]
+  }
+  catch (err) {
+
+  }
   //-------------------------------------
-  return  res.json('ok');
+  return res.json('ok');
 });
 
 router.post('/TPGHVK003-preview', async (req, res) => {
@@ -364,7 +369,7 @@ router.post('/TPGHVK003-preview', async (req, res) => {
     output = 'clear';
   }
   //-------------------------------------
-  return  res.json(output);
+  return res.json(output);
 });
 
 router.post('/TPGHVK003-confirmdata', async (req, res) => {
@@ -405,7 +410,7 @@ router.post('/TPGHVK003-confirmdata', async (req, res) => {
     output = 'NOK';
   }
   //-------------------------------------
-  return  res.json(output);
+  return res.json(output);
 });
 
 
@@ -510,10 +515,10 @@ router.post('/TPGHVK003-feedback', async (req, res) => {
 
 
               let core = 0;
-              if(TPGHVK003db['INTERSEC'] !== ''){
+              if (TPGHVK003db['INTERSEC'] !== '') {
                 core = parseFloat(TPGHVK003db['INTERSEC'])
-              }else{
-                core = parseFloat(axis_data[axis_data.length-1]['y'])
+              } else {
+                core = parseFloat(axis_data[axis_data.length - 1]['y'])
               }
 
               //-----------------core
@@ -576,11 +581,11 @@ router.post('/TPGHVK003-feedback', async (req, res) => {
               let c1 = (axis_data[pos[0]].y - d1 * axis_data[pos[0]].x);
               let c2 = (axis_data[pos[1]].y - d2 * axis_data[pos[1]].x);
 
-              
+
               let Xans = 0;
               let Yans = 0;
               let x = (c[1] - c[0]) / (d1 - d2);
-              
+
 
               if (x >= 0) {
                 Xans = x
@@ -638,7 +643,7 @@ router.post('/TPGHVK003-feedback', async (req, res) => {
   }
 
   //-------------------------------------
-  return  res.json(output);
+  return res.json(output);
 });
 
 router.post('/TPGHVK003-SETZERO', async (req, res) => {
@@ -706,7 +711,7 @@ router.post('/TPGHVK003-SETZERO', async (req, res) => {
     output = 'NOK';
   }
   //-------------------------------------
-  return  res.json(output);
+  return res.json(output);
 });
 
 router.post('/TPGHVK003-CLEAR', async (req, res) => {
@@ -728,7 +733,7 @@ router.post('/TPGHVK003-CLEAR', async (req, res) => {
     output = 'NOK';
   }
   //-------------------------------------
-  return  res.json(output);
+  return res.json(output);
 });
 
 router.post('/TPGHVK003-RESETVALUE', async (req, res) => {
@@ -752,7 +757,7 @@ router.post('/TPGHVK003-RESETVALUE', async (req, res) => {
     output = 'NOK';
   }
   //-------------------------------------
-  return  res.json(output);
+  return res.json(output);
 });
 
 //"value":[],  //key: PO1: itemname ,PO2:V01,PO3: V02,PO4: V03,PO5:V04,P06:INS,P9:NO.,P10:TYPE, last alway mean P01:"MEAN",PO2:V01,PO3:V02-MEAN,PO4: V03,PO5:V04-MEAN
@@ -880,7 +885,7 @@ router.post('/TPGHVK003-FINISH', async (req, res) => {
     );
   }
   //-------------------------------------
-  return  res.json(TPGHVK003db);
+  return res.json(TPGHVK003db);
 });
 
 
