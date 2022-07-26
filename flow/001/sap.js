@@ -9,6 +9,9 @@ var mssql = require('./../../function/mssql');
 let MAIN_DATA = 'MAIN_DATA';
 let MAIN = 'MAIN';
 
+let PATTERN = 'PATTERN';
+let PATTERN_01 = 'PATTERN_01';
+
 //-----------------
 
 
@@ -29,20 +32,33 @@ router.post('/sap', async (req, res) => {
       output = db['recordsets'][0]
     }
     let getdata = await mongodb.findsome(MAIN_DATA, MAIN,{});
+    let getdataINSPEC = await mongodb.findsome(PATTERN, PATTERN_01,{});
 
     for(i=0;i<output.length;i++){
       for(j=0;j<getdata.length;j++){
         if(output[i]['PO'] === getdata[j]['PO']){
-          output[i]['QCstatus'] = 'ip'
+          output[i]['QCstatus'] = 'ip';
           if(getdata[j]['ALL_DONE'] !== undefined){
-            output[i]['QCstatus'] = 'finish'
+            output[i]['QCstatus'] = 'finish';
           }
           break;
         }else{
-          output[i]['QCstatus'] = 'nohave'
+          output[i]['QCstatus'] = 'nohave';
+        }
+      }
+      for(j=0;j<getdataINSPEC.length;j++){
+        if(output[i]['CP'] === getdataINSPEC[j]['CP']){
+          output[i]['create'] = 'created';
+          if(getdataINSPEC[j]['permission']||'No Active' === 'Active'){
+            output[i]['permission'] = 'Active';
+          }
         }
       }
     }
+
+    
+
+
 
   }
   catch (err) {
