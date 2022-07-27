@@ -80,6 +80,7 @@ let TPGHRC004db = {
   "tool": NAME_INS,
   "value": [],  //key: PO1: itemname ,PO2:V01,PO3: V02,PO4: V03,PO5:V04,P06:INS,P9:NO.,P10:TYPE, last alway mean P01:"MEAN",PO2:V01,PO3:V02-MEAN,PO4: V03,PO5:V04-MEAN
   "dateupdatevalue": day,
+  "INTERSEC_ERR":0,
 }
 
 
@@ -197,6 +198,7 @@ router.post('/GETINtoTPGHRC004', async (req, res) => {
         "tool": NAME_INS,
         "value": [],  //key: PO1: itemname ,PO2:V01,PO3: V02,PO4: V03,PO5:V04,P06:INS,P9:NO.,P10:TYPE, last alway mean P01:"MEAN",PO2:V01,PO3:V02-MEAN,PO4: V03,PO5:V04-MEAN
         "dateupdatevalue": day,
+        "INTERSEC_ERR":0,
       }
 
       output = 'OK';
@@ -529,6 +531,7 @@ router.post('/TPGHRC004-feedback', async (req, res) => {
                 }
               }
 
+              try {
               let pointvalue = RawPoint[0].Point2.x - RawPoint[0].Point1.x;
               let data2 = RawPoint[0].Point1.y - core;
               let data3 = RawPoint[0].Point1.y - RawPoint[0].Point2.y;
@@ -541,6 +544,10 @@ router.post('/TPGHRC004-feedback', async (req, res) => {
 
               let feedbackupdateRESULTFORMAT = await mongodb.update(MAIN_DATA, MAIN, { "PO": input['PO'] }, { "$set": { 'FINAL_ANS': feedback[0]['FINAL_ANS'] } });
 
+            }
+            catch (err) {
+              TPGHRC004db[`INTERSEC_ERR`] = 1;
+            }
 
               //
             } else if (TPGHRC004db['GRAPHTYPE'] == 'CDE') {
@@ -703,6 +710,7 @@ router.post('/TPGHRC004-SETZERO', async (req, res) => {
       "tool": NAME_INS,
       "value": [],  //key: PO1: itemname ,PO2:V01,PO3: V02,PO4: V03,PO5:V04,P06:INS,P9:NO.,P10:TYPE, last alway mean P01:"MEAN",PO2:V01,PO3:V02-MEAN,PO4: V03,PO5:V04-MEAN
       "dateupdatevalue": day,
+      "INTERSEC_ERR":0,
     }
     output = 'OK';
   }

@@ -80,6 +80,7 @@ let TPGHRC005db = {
   "tool": NAME_INS,
   "value": [],  //key: PO1: itemname ,PO2:V01,PO3: V02,PO4: V03,PO5:V04,P06:INS,P9:NO.,P10:TYPE, last alway mean P01:"MEAN",PO2:V01,PO3:V02-MEAN,PO4: V03,PO5:V04-MEAN
   "dateupdatevalue": day,
+  "INTERSEC_ERR":0,
 }
 
 
@@ -197,6 +198,7 @@ router.post('/GETINtoTPGHRC005', async (req, res) => {
         "tool": NAME_INS,
         "value": [],  //key: PO1: itemname ,PO2:V01,PO3: V02,PO4: V03,PO5:V04,P06:INS,P9:NO.,P10:TYPE, last alway mean P01:"MEAN",PO2:V01,PO3:V02-MEAN,PO4: V03,PO5:V04-MEAN
         "dateupdatevalue": day,
+        "INTERSEC_ERR":0,
       }
 
       output = 'OK';
@@ -529,19 +531,23 @@ router.post('/TPGHRC005-feedback', async (req, res) => {
                 }
               }
 
-              let pointvalue = RawPoint[0].Point2.x - RawPoint[0].Point1.x;
-              let data2 = RawPoint[0].Point1.y - core;
-              let data3 = RawPoint[0].Point1.y - RawPoint[0].Point2.y;
+              try {
+                let pointvalue = RawPoint[0].Point2.x - RawPoint[0].Point1.x;
+                let data2 = RawPoint[0].Point1.y - core;
+                let data3 = RawPoint[0].Point1.y - RawPoint[0].Point2.y;
 
-              let RawData = RawPoint[0].Point1.x + (data2 / data3 * pointvalue);
-              let graph_ans_X = parseFloat(RawData.toFixed(2));
+                let RawData = RawPoint[0].Point1.x + (data2 / data3 * pointvalue);
+                let graph_ans_X = parseFloat(RawData.toFixed(2));
 
-              feedback[0]['FINAL_ANS'][input["ITEMs"]] = graph_ans_X;
-              feedback[0]['FINAL_ANS'][`${input["ITEMs"]}_point`] = { "x": graph_ans_X, "y": core };
+                feedback[0]['FINAL_ANS'][input["ITEMs"]] = graph_ans_X;
+                feedback[0]['FINAL_ANS'][`${input["ITEMs"]}_point`] = { "x": graph_ans_X, "y": core };
 
-              let feedbackupdateRESULTFORMAT = await mongodb.update(MAIN_DATA, MAIN, { "PO": input['PO'] }, { "$set": { 'FINAL_ANS': feedback[0]['FINAL_ANS'] } });
+                let feedbackupdateRESULTFORMAT = await mongodb.update(MAIN_DATA, MAIN, { "PO": input['PO'] }, { "$set": { 'FINAL_ANS': feedback[0]['FINAL_ANS'] } });
 
-
+              }
+              catch (err) {
+                TPGHRC005db[`INTERSEC_ERR`] = 1;
+              }
               //
             } else if (TPGHRC005db['GRAPHTYPE'] == 'CDE') {
               let axis_data = [];
@@ -703,6 +709,7 @@ router.post('/TPGHRC005-SETZERO', async (req, res) => {
       "tool": NAME_INS,
       "value": [],  //key: PO1: itemname ,PO2:V01,PO3: V02,PO4: V03,PO5:V04,P06:INS,P9:NO.,P10:TYPE, last alway mean P01:"MEAN",PO2:V01,PO3:V02-MEAN,PO4: V03,PO5:V04-MEAN
       "dateupdatevalue": day,
+      "INTERSEC_ERR":0,
     }
     output = 'OK';
   }
