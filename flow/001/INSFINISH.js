@@ -88,7 +88,7 @@ router.post('/FINISHtoDB', async (req, res) => {
     outputs = 'OK';
   } else {
 
-    console.log("---->");
+   
     let input_S2_1 = findpo[0]; //input1
     let input_S2_2 = output;     //input2
     let objectR = Object.getOwnPropertyNames(input_S2_1)
@@ -171,7 +171,7 @@ router.post('/FINISHtoDB', async (req, res) => {
             nameItem = objectI[k];
           }
         }
-
+        console.log("---->1");
         if (input_S4_2.inspectionItem !== nameItem) {
           let nameFOR = input_S4_2['MeasurmentFOR'];
           let nameTool = input_S4_2['tool'];
@@ -188,6 +188,7 @@ router.post('/FINISHtoDB', async (req, res) => {
           let upd = await mongodb.update(MAIN_DATA, MAIN, out_S4_1, out_S4_2);
 
         } else {
+        console.log("---->2");
 
           let nameFOR = input_S4_2.MeasurmentFOR;
           let nameTool = input_S4_2.tool;
@@ -220,7 +221,7 @@ router.post('/FINISHtoDB', async (req, res) => {
 
 router.post('/FINISHtoDB-apr', async (req, res) => {
   //-------------------------------------
-  console.log('--FINISHtoDB--');
+  console.log('--FINISHtoDB-apr--');
   console.log(req.body);
   let input = req.body;
   //-------------------------------------
