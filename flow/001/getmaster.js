@@ -102,6 +102,10 @@ router.post('/GETINSset', async (req, res) => {
       INSLISTans = [...new Set(INSLIST)];
       if(INSLISTans.length === 0){
         let feedbackupdateFINISH = await mongodb.update(MAIN_DATA, MAIN, { "PO": input['PO'] }, { "$set": { "ALL_DONE": "DONE", "PO_judgment": "pass", } });
+      }else if(INSLISTans.length ===1){
+        if(INSLISTans[0] === 'Other'){
+          let feedbackupdateFINISH = await mongodb.update(MAIN_DATA, MAIN, { "PO": input['PO'] }, { "$set": { "ALL_DONE": "DONE", "PO_judgment": "pass", } });
+        }
       }
     }
     catch (errin) {

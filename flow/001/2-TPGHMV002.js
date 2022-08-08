@@ -80,7 +80,7 @@ let TPGHMV002db = {
   "tool": NAME_INS,
   "value": [],  //key: PO1: itemname ,PO2:V01,PO3: V02,PO4: V03,PO5:V04,P06:INS,P9:NO.,P10:TYPE, last alway mean P01:"MEAN",PO2:V01,PO3:V02-MEAN,PO4: V03,PO5:V04-MEAN
   "dateupdatevalue": day,
-  "INTERSEC_ERR":0,
+  "INTERSEC_ERR": 0,
 }
 
 
@@ -198,7 +198,7 @@ router.post('/GETINtoTPGHMV002', async (req, res) => {
         "tool": NAME_INS,
         "value": [],  //key: PO1: itemname ,PO2:V01,PO3: V02,PO4: V03,PO5:V04,P06:INS,P9:NO.,P10:TYPE, last alway mean P01:"MEAN",PO2:V01,PO3:V02-MEAN,PO4: V03,PO5:V04-MEAN
         "dateupdatevalue": day,
-        "INTERSEC_ERR":0,
+        "INTERSEC_ERR": 0,
       }
 
       output = 'OK';
@@ -434,6 +434,7 @@ router.post('/TPGHMV002-feedback', async (req, res) => {
       let ob = feedback[0]['FINAL'][NAME_INS][input["ITEMs"]];
 
 
+
       let LISTbuffer = [];
       let ITEMleftVALUEout = [];
 
@@ -450,6 +451,7 @@ router.post('/TPGHMV002-feedback', async (req, res) => {
           }
 
         }
+
 
 
         TPGHMV002db["ITEMleftUNIT"] = [{ "V1": "FINAL", "V2": `${oblist.length}` }];
@@ -709,7 +711,7 @@ router.post('/TPGHMV002-SETZERO', async (req, res) => {
       "tool": NAME_INS,
       "value": [],  //key: PO1: itemname ,PO2:V01,PO3: V02,PO4: V03,PO5:V04,P06:INS,P9:NO.,P10:TYPE, last alway mean P01:"MEAN",PO2:V01,PO3:V02-MEAN,PO4: V03,PO5:V04-MEAN
       "dateupdatevalue": day,
-      "INTERSEC_ERR":0,
+      "INTERSEC_ERR": 0,
     }
     output = 'OK';
   }
