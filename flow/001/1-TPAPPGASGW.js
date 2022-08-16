@@ -728,7 +728,6 @@ router.post('/APPGASGW-FINISH-APR', async (req, res) => {
       "PO10": "AUTO",
     };
 
-
   }
 
   if (APPGASGWdb['RESULTFORMAT'] === 'Text') {

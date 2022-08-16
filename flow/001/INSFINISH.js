@@ -238,7 +238,15 @@ router.post('/FINISHtoDB-apr', async (req, res) => {
     let Item = {};
     let Tool = {};
 
-    Item[nameItem] = { "PSC1": value,"PSC2": value,"PSC3": value,"PSC4": value,"PSC5": value ,"PSC6": value,"PSC7": value,"PSC8": value,"PSC9": value,"PSC10": value};
+    if(input[`PCS`] === '1'){
+      Item[nameItem] = { "PSC1": value};
+    }else if(input[`PCS`] === '5'){
+      Item[nameItem] = { "PSC1": value,"PSC2": value,"PSC3": value,"PSC4": value,"PSC5": value };
+    }else {
+      Item[nameItem] = { "PSC1": value,"PSC2": value,"PSC3": value,"PSC4": value,"PSC5": value ,"PSC6": value,"PSC7": value,"PSC8": value,"PSC9": value,"PSC10": value};
+    }
+
+    
     Tool[nameTool] = Item;
 
     output[nameFOR] = Tool;
@@ -309,7 +317,14 @@ router.post('/FINISHtoDB-apr', async (req, res) => {
       FOR[nameFOR] = Tool;
       let out_S2_1 = { "PO": input_S2_2.PO };
       let out_S2_2 = { $set: FOR }
-      Item[nameItem] = {  "PSC1": value,"PSC2": value,"PSC3": value,"PSC4": value,"PSC5": value ,"PSC6": value,"PSC7": value,"PSC8": value,"PSC9": value,"PSC10": value};
+      if(input[`PCS`] === '1' ||input[`PCS`] === 1){
+        Item[nameItem] = { "PSC1": value};
+      }else if(input[`PCS`] === '5'||input[`PCS`] === 5){
+        Item[nameItem] = { "PSC1": value,"PSC2": value,"PSC3": value,"PSC4": value,"PSC5": value };
+      }else {
+        Item[nameItem] = { "PSC1": value,"PSC2": value,"PSC3": value,"PSC4": value,"PSC5": value ,"PSC6": value,"PSC7": value,"PSC8": value,"PSC9": value,"PSC10": value};
+      }
+      // Item[nameItem] = {  "PSC1": value,"PSC2": value,"PSC3": value,"PSC4": value,"PSC5": value ,"PSC6": value,"PSC7": value,"PSC8": value,"PSC9": value,"PSC10": value};
       // outputs=[out_S2_1,out_S2_2]
       outputs = 'OK'
       let upd = await mongodb.update(MAIN_DATA, MAIN, out_S2_1, out_S2_2);
@@ -378,7 +393,14 @@ router.post('/FINISHtoDB-apr', async (req, res) => {
           let FOR = input_S4_1[nameFOR];
           let Tool = FOR[nameTool];
           let Item = Tool
-          Item[nameItem] = {  "PSC1": value,"PSC2": value,"PSC3": value,"PSC4": value,"PSC5": value ,"PSC6": value,"PSC7": value,"PSC8": value,"PSC9": value,"PSC10": value };
+          if(input[`PCS`] === '1' ||input[`PCS`] === 1){
+            Item[nameItem] = { "PSC1": value};
+          }else if(input[`PCS`] === '5'||input[`PCS`] === 5){
+            Item[nameItem] = { "PSC1": value,"PSC2": value,"PSC3": value,"PSC4": value,"PSC5": value };
+          }else {
+            Item[nameItem] = { "PSC1": value,"PSC2": value,"PSC3": value,"PSC4": value,"PSC5": value ,"PSC6": value,"PSC7": value,"PSC8": value,"PSC9": value,"PSC10": value};
+          }
+          // Item[nameItem] = {  "PSC1": value,"PSC2": value,"PSC3": value,"PSC4": value,"PSC5": value ,"PSC6": value,"PSC7": value,"PSC8": value,"PSC9": value,"PSC10": value };
           let out_S4_1 = { PO: input_S4_2.PO };
           let out_S4_2 = { $set: input_S4_1 }
 
