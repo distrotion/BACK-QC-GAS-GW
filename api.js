@@ -11,6 +11,8 @@ router.use(require("./flow/001/4-TPGHRC004"))
 router.use(require("./flow/001/5-TPGHRC005"))
 router.use(require("./flow/001/6-TPGHVK003"))
 router.use(require("./flow/001/7-TPGMCS001"))
+router.use(require("./flow/001/8-TPGVCP002"))
+
 router.use(require("./flow/001/INSFINISH"))
 router.use(require("./flow/001/cleardata"))
 router.use(require("./flow/001/GRAPHMASTER"))
