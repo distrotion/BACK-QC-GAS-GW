@@ -31,8 +31,8 @@ router.post('/sap', async (req, res) => {
     if (db['recordsets'].length > 0) {
       output = db['recordsets'][0]
     }
-    let getdata = await mongodb.findsome(MAIN_DATA, MAIN,{});
-    let getdataINSPEC = await mongodb.findsome(PATTERN, PATTERN_01,{});
+    let getdata = await mongodb.find(MAIN_DATA, MAIN,{});
+    let getdataINSPEC = await mongodb.find(PATTERN, PATTERN_01,{});
 
     for(i=0;i<output.length;i++){
       for(j=0;j<getdata.length;j++){
