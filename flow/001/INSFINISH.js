@@ -463,7 +463,7 @@ router.post('/GRAPH-recal', async (req, res) => {
       }
 
       
-      if (input["MODE"] == 'CDE') {
+      if (input["MODE"] == 'CDT') {
 
         //
         let axis_data = [];
