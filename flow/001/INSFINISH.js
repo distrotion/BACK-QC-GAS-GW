@@ -448,8 +448,9 @@ router.post('/GRAPH-recal', async (req, res) => {
 
   //-------------------------------------
   if (input["PO"] !== undefined && input["ITEMs"] !== undefined) {
-    let feedback = await mongodb.find(MAIN_DATA, MAIN, { "PO": input['PO'] });
+    let feedback = await mongodb.find(MAIN_DATA, MAIN, { "PO": `${input['PO']}` });
 
+    
     if (feedback.length > 0 && feedback[0]['FINAL'] != undefined && feedback[0]['FINAL'][input["NAME_INS"]] != undefined && feedback[0]['FINAL'][input["NAME_INS"]][input["ITEMs"]] != undefined) {
       // console.log(Object.keys(feedback[0]['FINAL'][NAME_INS][input["ITEMs"]]));
       let oblist = Object.keys(feedback[0]['FINAL'][input["NAME_INS"]][input["ITEMs"]]);
@@ -462,9 +463,9 @@ router.post('/GRAPH-recal', async (req, res) => {
         LISTbuffer.push(...ob[oblist[i]])
       }
 
-      
-      if (input["MODE"] == 'CDT') {
 
+      if (input["MODE"] == 'CDT') {
+        
         //
         let axis_data = [];
         for (i = 0; i < LISTbuffer.length; i++) {
@@ -473,12 +474,13 @@ router.post('/GRAPH-recal', async (req, res) => {
           }
         }
         //-----------------core
-
+      
+        console.log(  input['INTERSEC'] );
         let core = 0;
         if (input['INTERSEC'] !== '') {
           core = parseFloat(input['INTERSEC'])
         } else {
-          core = parseFloat(axis_data[axis_data.length - 1]['y'])
+          core = parseFloat(axis_data[axis_data.length - 1]['y']) +50
         }
 
         //-----------------core
@@ -490,7 +492,7 @@ router.post('/GRAPH-recal', async (req, res) => {
           }
         }
 
-        try {
+        // try {
           let pointvalue = RawPoint[0].Point2.x - RawPoint[0].Point1.x;
           let data2 = RawPoint[0].Point1.y - core;
           let data3 = RawPoint[0].Point1.y - RawPoint[0].Point2.y;
@@ -502,10 +504,10 @@ router.post('/GRAPH-recal', async (req, res) => {
           feedback[0]['FINAL_ANS'][`${input["ITEMs"]}_point`] = { "x": graph_ans_X, "y": core };
 
           let feedbackupdateRESULTFORMAT = await mongodb.update(MAIN_DATA, MAIN, { "PO": input['PO'] }, { "$set": { 'FINAL_ANS': feedback[0]['FINAL_ANS'] } });
-        }
-        catch (err) {
-          TPGHMV002db[`INTERSEC_ERR`] = 1;
-        }
+        // }
+        // catch (err) {
+        //   // TPGHMV002db[`INTERSEC_ERR`] = 1;
+        // }
         output = 'OK1';
         //
       } else if (input["MODE"] == 'CDE') {

@@ -1,7 +1,6 @@
 const axios = require('axios')
 
 exports.post =  async (url,body) => {
-    
     await axios.post( url, body).then(async res => {
     // console.log(`statusCode: ${res.status}`)
     // console.log(res)
@@ -13,9 +12,7 @@ exports.post =  async (url,body) => {
     output = await error.response.status
     // outputr = `err`
   })
-
   return output;
-     
 };
 
 exports.get =  async (url) => {

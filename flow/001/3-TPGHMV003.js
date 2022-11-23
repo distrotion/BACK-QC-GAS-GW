@@ -527,7 +527,7 @@ router.post('/TPGHMV003-feedback', async (req, res) => {
 
           } else if (masterITEMs[0]['RESULTFORMAT'] === 'Graph') {
 
-            if (TPGHMV003db['GRAPHTYPE'] == 'CDE') {
+            if (TPGHMV003db['GRAPHTYPE'] == 'CDT' || TPGHMV003db['GRAPHTYPE'] == 'CDT(S)') {
 
               //
               let axis_data = [];
@@ -542,7 +542,7 @@ router.post('/TPGHMV003-feedback', async (req, res) => {
               if (TPGHMV003db['INTERSEC'] !== '') {
                 core = parseFloat(TPGHMV003db['INTERSEC'])
               } else {
-                core = parseFloat(axis_data[axis_data.length - 1]['y'])
+                core = parseFloat(axis_data[axis_data.length - 1]['y'])+50
               }
 
 
