@@ -527,7 +527,7 @@ router.post('/TPGHMV003-feedback', async (req, res) => {
 
           } else if (masterITEMs[0]['RESULTFORMAT'] === 'Graph') {
 
-            if (TPGHMV003db['GRAPHTYPE'] == 'CDT' || TPGHMV003db['GRAPHTYPE'] == 'CDT(S)') {
+            if (TPGHMV003db['GRAPHTYPE'] == 'CDT' || TPGHMV003db['GRAPHTYPE'] == 'CDT(S)' ||TPGHMV003db['GRAPHTYPE'] == 'CDE') {
 
               //
               let axis_data = [];
@@ -577,7 +577,8 @@ router.post('/TPGHMV003-feedback', async (req, res) => {
               }
 
               //
-            } else if (TPGHMV003db['GRAPHTYPE'] == 'CDE') {
+            } else {
+              try {
               let axis_data = [];
               for (i = 0; i < LISTbuffer.length; i++) {
                 if (LISTbuffer[i]['PO1'] !== 'Mean') {
@@ -636,8 +637,10 @@ router.post('/TPGHMV003-feedback', async (req, res) => {
               feedback[0]['FINAL_ANS'][`${input["ITEMs"]}_point`] = { "x": graph_ans_X, "y": graph_ans_Y };
 
               let feedbackupdateRESULTFORMAT = await mongodb.update(MAIN_DATA, MAIN, { "PO": input['PO'] }, { "$set": { 'FINAL_ANS': feedback[0]['FINAL_ANS'] } });
-
-
+            }
+              catch (err) {
+                TPGHMV003db[`INTERSEC_ERR`] = 1;
+              }
             }
 
           } else if (masterITEMs[0]['RESULTFORMAT'] === 'Picture') {
