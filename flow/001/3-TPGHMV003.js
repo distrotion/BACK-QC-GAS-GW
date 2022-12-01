@@ -527,7 +527,107 @@ router.post('/TPGHMV003-feedback', async (req, res) => {
 
           } else if (masterITEMs[0]['RESULTFORMAT'] === 'Graph') {
 
-            if (TPGHMV003db['GRAPHTYPE'] == 'CDT' || TPGHMV003db['GRAPHTYPE'] == 'CDT(S)' ||TPGHMV003db['GRAPHTYPE'] == 'CDE') {
+            if (TPGHMV003db['GRAPHTYPE'] == 'CDE') {
+
+              //
+              let axis_data = [];
+              for (i = 0; i < LISTbuffer.length; i++) {
+                if (LISTbuffer[i]['PO1'] !== 'Mean') {
+                  axis_data.push({ x: parseFloat(LISTbuffer[i].PO8), y: parseFloat(LISTbuffer[i].PO3) });
+                }
+              }
+              //-----------------core
+
+              let core = 0;
+              if (TPGHMV003db['INTERSEC'] !== '') {
+                core = parseFloat(TPGHMV003db['INTERSEC'])
+              } else {
+                core = parseFloat(axis_data[axis_data.length - 1]['y'])
+              }
+
+
+
+
+
+              //-----------------core
+              let RawPoint = [];
+              for (i = 0; i < axis_data.length - 1; i++) {
+                if (core <= axis_data[i].y && core >= axis_data[i + 1].y) {
+                  RawPoint.push({ Point1: axis_data[i], Point2: axis_data[i + 1] });
+                  break
+                }
+              }
+
+              try {
+                let pointvalue = RawPoint[0].Point2.x - RawPoint[0].Point1.x;
+                let data2 = RawPoint[0].Point1.y - core;
+                let data3 = RawPoint[0].Point1.y - RawPoint[0].Point2.y;
+
+                let RawData = RawPoint[0].Point1.x + (data2 / data3 * pointvalue);
+                let graph_ans_X = parseFloat(RawData.toFixed(2));
+
+                feedback[0]['FINAL_ANS'][input["ITEMs"]] = graph_ans_X;
+                feedback[0]['FINAL_ANS'][`${input["ITEMs"]}_point`] = { "x": graph_ans_X, "y": core };
+
+                let feedbackupdateRESULTFORMAT = await mongodb.update(MAIN_DATA, MAIN, { "PO": input['PO'] }, { "$set": { 'FINAL_ANS': feedback[0]['FINAL_ANS'] } });
+
+              }
+              catch (err) {
+                TPGHMV003db[`INTERSEC_ERR`] = 1;
+              }
+
+              //
+            } else if (TPGHMV003db['GRAPHTYPE'] == 'CDT') {
+
+              //
+              let axis_data = [];
+              for (i = 0; i < LISTbuffer.length; i++) {
+                if (LISTbuffer[i]['PO1'] !== 'Mean') {
+                  axis_data.push({ x: parseFloat(LISTbuffer[i].PO8), y: parseFloat(LISTbuffer[i].PO3) });
+                }
+              }
+              //-----------------core
+
+              let core = 0;
+              if (TPGHMV003db['INTERSEC'] !== '') {
+                core = parseFloat(TPGHMV003db['INTERSEC'])
+              } else {
+                core = parseFloat(axis_data[axis_data.length - 1]['y'])
+              }
+
+
+
+
+
+              //-----------------core
+              let RawPoint = [];
+              for (i = 0; i < axis_data.length - 1; i++) {
+                if (core <= axis_data[i].y && core >= axis_data[i + 1].y) {
+                  RawPoint.push({ Point1: axis_data[i], Point2: axis_data[i + 1] });
+                  break
+                }
+              }
+
+              try {
+                let pointvalue = RawPoint[0].Point2.x - RawPoint[0].Point1.x;
+                let data2 = RawPoint[0].Point1.y - core;
+                let data3 = RawPoint[0].Point1.y - RawPoint[0].Point2.y;
+
+                let RawData = RawPoint[0].Point1.x + (data2 / data3 * pointvalue);
+                let graph_ans_X = parseFloat(RawData.toFixed(2));
+
+                feedback[0]['FINAL_ANS'][input["ITEMs"]] = graph_ans_X;
+                feedback[0]['FINAL_ANS'][`${input["ITEMs"]}_point`] = { "x": graph_ans_X, "y": core };
+
+                let feedbackupdateRESULTFORMAT = await mongodb.update(MAIN_DATA, MAIN, { "PO": input['PO'] }, { "$set": { 'FINAL_ANS': feedback[0]['FINAL_ANS'] } });
+
+              }
+              catch (err) {
+                TPGHMV003db[`INTERSEC_ERR`] = 1;
+              }
+
+              //
+            }else if (TPGHMV003db['GRAPHTYPE'] == 'CDT(S)') {
 
               //
               let axis_data = [];
