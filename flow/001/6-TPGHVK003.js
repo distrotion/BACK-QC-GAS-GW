@@ -121,13 +121,15 @@ router.post('/GETINtoTPGHVK003', async (req, res) => {
     // let dbsap = await mssql.qurey(`select * FROM [SAPData_GW_GAS].[dbo].[tblSAPDetail] where [PO] = ${input['PO']}`);
     let findPO = await mongodb.findSAP('mongodb://172.23.10.71:27017', "ORDER", "ORDER", {});
 
+    let cuslot = '';
 
     if (findPO[0][`DATA`] != undefined && findPO[0][`DATA`].length > 0) {
       let dbsap = ''
       for (i = 0; i < findPO[0][`DATA`].length; i++) {
         if (findPO[0][`DATA`][i][`PO`] === input['PO']) {
           dbsap = findPO[0][`DATA`][i];
-          break;
+          // break;
+          cuslot = cuslot+ findPO[0][`DATA`][i][`CUSLOTNO`]+ ','
         }
       }
 
@@ -172,7 +174,8 @@ router.post('/GETINtoTPGHVK003', async (req, res) => {
             "MATCP": input['CP'] || '',
             "QTY": dbsap ['QUANTITY'] || '',
             "PROCESS": dbsap ['PROCESS'] || '',
-            "CUSLOT": dbsap ['CUSLOTNO'] || '',
+            // "CUSLOT": dbsap ['CUSLOTNO'] || '',
+            "CUSLOT": cuslot,
             "TPKLOT": dbsap ['FG_CHARG'] || '',
             "FG": dbsap ['FG'] || '',
             "CUSTOMER": dbsap ['CUSTOMER'] || '',
@@ -182,7 +185,8 @@ router.post('/GETINtoTPGHVK003', async (req, res) => {
             //---new
             "QUANTITY": dbsap ['QUANTITY'] || '',
             // "PROCESS":dbsap ['PROCESS'] || '',
-            "CUSLOTNO": dbsap ['CUSLOTNO'] || '',
+            // "CUSLOTNO": dbsap ['CUSLOTNO'] || '',
+            "CUSLOTNO":  cuslot,
             "FG_CHARG": dbsap ['FG_CHARG'] || '',
             "PARTNAME_PO": dbsap ['PARTNAME_PO'] || '',
             "PART_PO": dbsap ['PART_PO'] || '',
