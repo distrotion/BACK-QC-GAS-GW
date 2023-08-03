@@ -419,10 +419,16 @@ router.post('/TPGHMV002-confirmdata', async (req, res) => {
       pushdata['V5'] = TPGHMV002db['GAP'];
       pushdata['V1'] = `${TPGHMV002db['confirmdata'].length + 1}:${pushdata['V1']}`;
 
-      TPGHMV002db['confirmdata'].push(pushdata);
-      TPGHMV002db['preview'] = [];
-      output = 'OK';
-      TPGHMV002db['GAP'] = TPGHMV002db['GAPnameListdata'][`GT${TPGHMV002db['confirmdata'].length + 1}`]
+      if(TPGHMV002db['GAP'] !=''){
+
+        TPGHMV002db['confirmdata'].push(pushdata);
+        TPGHMV002db['preview'] = [];
+        output = 'OK';
+        TPGHMV002db['GAP'] = TPGHMV002db['GAPnameListdata'][`GT${TPGHMV002db['confirmdata'].length + 1}`]
+      }else{
+        output = 'NOK';
+      }
+
 
     } else if (TPGHMV002db['RESULTFORMAT'] === 'Number') {
 

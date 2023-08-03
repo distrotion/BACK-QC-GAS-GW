@@ -130,7 +130,7 @@ router.post('/GETINtoTPGHMV003', async (req, res) => {
         if (findPO[0][`DATA`][i][`PO`] === input['PO']) {
           dbsap = findPO[0][`DATA`][i];
           // break;
-          cuslot = cuslot+ findPO[0][`DATA`][i][`CUSLOTNO`]+ ','
+          cuslot = cuslot + findPO[0][`DATA`][i][`CUSLOTNO`] + ','
         }
       }
 
@@ -188,7 +188,7 @@ router.post('/GETINtoTPGHMV003', async (req, res) => {
           "QUANTITY": dbsap['QUANTITY'] || '',
           // "PROCESS":dbsap ['PROCESS'] || '',
           // "CUSLOTNO": dbsap['CUSLOTNO'] || '',
-          "CUSLOTNO":  cuslot,
+          "CUSLOTNO": cuslot,
           "FG_CHARG": dbsap['FG_CHARG'] || '',
           "PARTNAME_PO": dbsap['PARTNAME_PO'] || '',
           "PART_PO": dbsap['PART_PO'] || '',
@@ -418,10 +418,15 @@ router.post('/TPGHMV003-confirmdata', async (req, res) => {
       pushdata['V5'] = TPGHMV003db['GAP'];
       pushdata['V1'] = `${TPGHMV003db['confirmdata'].length + 1}:${pushdata['V1']}`;
 
-      TPGHMV003db['confirmdata'].push(pushdata);
-      TPGHMV003db['preview'] = [];
-      output = 'OK';
-      TPGHMV003db['GAP'] = TPGHMV003db['GAPnameListdata'][`GT${TPGHMV003db['confirmdata'].length + 1}`]
+      if (TPGHMV003db['GAP'] != '') {
+
+        TPGHMV003db['confirmdata'].push(pushdata);
+        TPGHMV003db['preview'] = [];
+        output = 'OK';
+        TPGHMV003db['GAP'] = TPGHMV003db['GAPnameListdata'][`GT${TPGHMV003db['confirmdata'].length + 1}`]
+      } else {
+        output = 'NOK';
+      }
 
     } else if (TPGHMV003db['RESULTFORMAT'] === 'Number') {
 
@@ -631,7 +636,7 @@ router.post('/TPGHMV003-feedback', async (req, res) => {
               }
 
               //
-            }else if (TPGHMV003db['GRAPHTYPE'] == 'CDT(S)') {
+            } else if (TPGHMV003db['GRAPHTYPE'] == 'CDT(S)') {
 
               //
               let axis_data = [];
@@ -646,7 +651,7 @@ router.post('/TPGHMV003-feedback', async (req, res) => {
               if (TPGHMV003db['INTERSEC'] !== '') {
                 core = parseFloat(TPGHMV003db['INTERSEC'])
               } else {
-                core = parseFloat(axis_data[axis_data.length - 1]['y'])+50
+                core = parseFloat(axis_data[axis_data.length - 1]['y']) + 50
               }
 
 
@@ -683,65 +688,65 @@ router.post('/TPGHMV003-feedback', async (req, res) => {
               //
             } else {
               try {
-              let axis_data = [];
-              for (i = 0; i < LISTbuffer.length; i++) {
-                if (LISTbuffer[i]['PO1'] !== 'Mean') {
-                  axis_data.push({ x: parseFloat(LISTbuffer[i].PO8), y: parseFloat(LISTbuffer[i].PO3) });
+                let axis_data = [];
+                for (i = 0; i < LISTbuffer.length; i++) {
+                  if (LISTbuffer[i]['PO1'] !== 'Mean') {
+                    axis_data.push({ x: parseFloat(LISTbuffer[i].PO8), y: parseFloat(LISTbuffer[i].PO3) });
+                  }
                 }
-              }
 
-              let d = []
-              for (i = 0; i < axis_data.length - 1; i++) {
-                d.push((axis_data[i].y - axis_data[i + 1].y) / (axis_data[i + 1].x - axis_data[i].x));
-              }
+                let d = []
+                for (i = 0; i < axis_data.length - 1; i++) {
+                  d.push((axis_data[i].y - axis_data[i + 1].y) / (axis_data[i + 1].x - axis_data[i].x));
+                }
 
-              let def = []
+                let def = []
 
-              for (i = 0; i < d.length - 1; i++) {
-                if (d[i] > d[i + 1]) {
-                  def[i] = (d[i] - d[i + 1])
+                for (i = 0; i < d.length - 1; i++) {
+                  if (d[i] > d[i + 1]) {
+                    def[i] = (d[i] - d[i + 1])
+                  } else {
+                    def[i] = (d[i + 1] - d[i])
+                  }
+
+                }
+
+                for (j = 0; j < def.length; j++) {
+                  if (def[j] === Math.max(...def)) {
+                    pos = [j + 1, j + 2]
+                  }
+                }
+
+                let d1 = -d[pos[0] - 1]
+                let d2 = -d[pos[1]]
+
+
+                let c1 = (axis_data[pos[0]].y - d1 * axis_data[pos[0]].x);
+                let c2 = (axis_data[pos[1]].y - d2 * axis_data[pos[1]].x);
+
+
+                let Xans = 0;
+                let Yans = 0;
+                let x = (c[1] - c[0]) / (d1 - d2);
+
+
+                if (x >= 0) {
+                  Xans = x
                 } else {
-                  def[i] = (d[i + 1] - d[i])
+                  Xans = -x
                 }
 
+                y = d1 * Xans + c[0]
+                Yans = y
+
+                let graph_ans_X = parseFloat(Xans.toFixed(2));
+                let graph_ans_Y = parseFloat(Yans.toFixed(2));
+
+                feedback[0]['FINAL_ANS'][input["ITEMs"]] = graph_ans_X;
+                feedback[0]['FINAL_ANS'][`${input["ITEMs"]}_point`] = { "x": graph_ans_X, "y": graph_ans_Y };
+
+                let feedbackupdateRESULTFORMAT = await mongodb.update(MAIN_DATA, MAIN, { "PO": input['PO'] }, { "$set": { 'FINAL_ANS': feedback[0]['FINAL_ANS'] } });
               }
-
-              for (j = 0; j < def.length; j++) {
-                if (def[j] === Math.max(...def)) {
-                  pos = [j + 1, j + 2]
-                }
-              }
-
-              let d1 = -d[pos[0] - 1]
-              let d2 = -d[pos[1]]
-
-
-              let c1 = (axis_data[pos[0]].y - d1 * axis_data[pos[0]].x);
-              let c2 = (axis_data[pos[1]].y - d2 * axis_data[pos[1]].x);
-
-
-              let Xans = 0;
-              let Yans = 0;
-              let x = (c[1] - c[0]) / (d1 - d2);
-
-
-              if (x >= 0) {
-                Xans = x
-              } else {
-                Xans = -x
-              }
-
-              y = d1 * Xans + c[0]
-              Yans = y
-
-              let graph_ans_X = parseFloat(Xans.toFixed(2));
-              let graph_ans_Y = parseFloat(Yans.toFixed(2));
-
-              feedback[0]['FINAL_ANS'][input["ITEMs"]] = graph_ans_X;
-              feedback[0]['FINAL_ANS'][`${input["ITEMs"]}_point`] = { "x": graph_ans_X, "y": graph_ans_Y };
-
-              let feedbackupdateRESULTFORMAT = await mongodb.update(MAIN_DATA, MAIN, { "PO": input['PO'] }, { "$set": { 'FINAL_ANS': feedback[0]['FINAL_ANS'] } });
-            }
               catch (err) {
                 TPGHMV003db[`INTERSEC_ERR`] = 1;
               }
