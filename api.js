@@ -16,6 +16,11 @@ router.use(require("./flow/001/8-TPGVCP002"))
 router.use(require("./flow/001/INSFINISH"))
 router.use(require("./flow/001/cleardata"))
 router.use(require("./flow/001/GRAPHMASTER"))
+
+
+router.use(require("./flow/002/01TOBEREPORT"))
+
+
 //
 //INSFINISH
 // router.use(require("./flow/004/flow004"))
@@ -23,4 +28,5 @@ router.use(require("./flow/001/GRAPHMASTER"))
 router.use(require("./flow/testflow/testflow"))
 
 module.exports = router;
+
 
