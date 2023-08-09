@@ -600,7 +600,8 @@ router.post('/TPGHMV002-feedback', async (req, res) => {
               if (TPGHMV002db['INTERSEC'] !== '') {
                 core = parseFloat(TPGHMV002db['INTERSEC'])
               } else {
-                core = parseFloat(axis_data[axis_data.length - 1]['y']) 
+                // core = parseFloat(axis_data[axis_data.length - 1]['y']) 
+                core = parseFloat(axis_data[axis_data.length - 1]['y']) +50
               }
 
               //-----------------core
