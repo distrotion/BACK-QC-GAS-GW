@@ -736,6 +736,43 @@ router.post('/GRAPH-recal-New', async (req, res) => {
   return res.json(output);
 });
 
+
+router.post('/GASGWreport', async (req, res) => {
+  //-------------------------------------
+  console.log('--ISNHESreport--');
+  console.log(req.body);
+  let input = req.body;
+  //-------------------------------------
+  let output = [];
+  //-------------------------------------
+  var d = new Date();
+  d.setFullYear(d.getFullYear(), d.getMonth(), d.getDate() - 10);
+
+  var dc = new Date();
+  dc.setFullYear(dc.getFullYear(), dc.getMonth(), dc.getDate());
+
+  // let day = `${d.getFullYear()}-${(d.getMonth() + 1).pad(2)}-${(d.getDate()).pad(2)}`
+  // let dayC = `${dc.getFullYear()}-${(dc.getMonth() + 1).pad(2)}-${(dc.getDate()).pad(2)}`
+  // let tim = `${(d.getHours()).pad(2)}:${(d.getMinutes()).pad(2)}:${(d.getSeconds()).pad(2)}`
+
+  let out = {
+    "ALL_DONE": 'DONE',
+    "dateG":
+    {
+      "$gte": d,
+      "$lt": dc
+    },
+    // "FINAL_ANS" : { $exists : false },
+  }
+
+  output = await mongodb.findproject(MAIN_DATA, MAIN, out,{"PO":1,"CP":1,"MATCP":1,"CUSTOMER":1,"PART":1,"PARTNAME":1,"MATERIAL":1,"CUSLOTNO":1});
+  console.log(output)
+
+
+  //-------------------------------------
+  return res.json(output);
+});
+
 //let objectR = Object.getOwnPropertyNames(input_S2_1)
 
 module.exports = router;

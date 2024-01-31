@@ -51,6 +51,9 @@ router.post('/GETINSset', async (req, res) => {
   if (input['CP'] !== undefined && input['PO'] !== undefined) {
     findcp = await mongodb.find(PATTERN, PATTERN_01, { "CP": input['CP'] });
     findPO = await mongodb.find(MAIN_DATA, MAIN, { "PO": input['PO'] });
+
+    console.log(findcp.length)
+   
   }
   if (findcp.length > 0 && findPO.length === 0) {
     if (findcp[0]['FINAL'] !== undefined && findcp[0]['FINAL'].length > 0) {
@@ -77,15 +80,19 @@ router.post('/GETINSset', async (req, res) => {
       INSLISTans = [...new Set(INSLIST)];
     }
   } else {
-    try {
 
+    try {
+     
       let CHECKlist = findPO[0]['CHECKlist'];
       let CHECKlistnew = [];
       MACHINEmaster = await mongodb.find(master_FN, MACHINE, {});
-
+      console.log(CHECKlist.length)
       for (i = 0; i < CHECKlist.length; i++) {
+        console.log("--------------------------")
+        console.log(CHECKlist[i]);
         if (CHECKlist[i]['FINISH'] === undefined) {
           CHECKlistnew.push(CHECKlist[i]);
+
         }
       }
       // console.log(CHECKlistnew);
@@ -107,8 +114,8 @@ router.post('/GETINSset', async (req, res) => {
           let feedbackupdateFINISH = await mongodb.update(MAIN_DATA, MAIN, { "PO": input['PO'] }, { "$set": { "ALL_DONE": "DONE", "PO_judgment": "pass", } });
         }
       }
-    }
-    catch (errin) {
+    } catch (errin) {
+   
       if (findcp.length > 0) {
         for (i = 0; i < findcp[0]['FINAL'].length; i++) {
           ITEMMETHODlist.push({ "ITEMs": findcp[0]['FINAL'][i]['ITEMs'], "METHOD": findcp[0]['FINAL'][i]['METHOD'] })
