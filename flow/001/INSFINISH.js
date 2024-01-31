@@ -739,7 +739,7 @@ router.post('/GRAPH-recal-New', async (req, res) => {
 
 router.post('/GASGWreport', async (req, res) => {
   //-------------------------------------
-  console.log('--ISNHESreport--');
+  console.log('--GASGWreport--');
   console.log(req.body);
   let input = req.body;
   //-------------------------------------
