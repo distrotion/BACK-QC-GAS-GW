@@ -180,9 +180,12 @@ router.post('/GETINtoTPGHMV002', async (req, res) => {
           "TPKLOT": dbsap['FG_CHARG'] || '',
           "FG": dbsap['FG'] || '',
           "CUSTOMER": dbsap['CUSTOMER'] || '',
-          "PART": dbsap['PART'] || '',
-          "PARTNAME": dbsap['PARTNAME'] || '',
-          "MATERIAL": dbsap['MATERIAL'] || '',
+          "PART": findcp[0]['PART'] || '',
+          "PART_s": dbsap['PART'] || '',
+          "PARTNAME_s": dbsap['PARTNAME'] || '',
+          "PARTNAME": findcp[0]['PARTNAME'] || '',
+          "MATERIAL": findcp[0]['MATERIAL'] || '',
+          "MATERIAL_s": dbsap['MATERIAL'] || '',
           //---new
           "QUANTITY": dbsap['QUANTITY'] || '',
           // "PROCESS":dbsap ['PROCESS'] || '',
@@ -191,7 +194,9 @@ router.post('/GETINtoTPGHMV002', async (req, res) => {
           "FG_CHARG": dbsap['FG_CHARG'] || '',
           "PARTNAME_PO": dbsap['PARTNAME_PO'] || '',
           "PART_PO": dbsap['PART_PO'] || '',
-          "CUSTNAME": dbsap['CUSTNAME'] || '',
+          "CUSTNAME_s": dbsap['CUSTNAME'] || '',
+          "CUSTNAME": findcp[0]['CUST_FULLNM'] || '',
+          "UNITSAP": dbsap['UNIT'] || '',
           //----------------------
           "ItemPick": ItemPickoutP2, //---->
           "ItemPickcode": ItemPickcodeoutP2, //---->

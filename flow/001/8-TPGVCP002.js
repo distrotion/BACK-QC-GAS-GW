@@ -130,7 +130,7 @@ router.post('/GETINtoTPGVCP002', async (req, res) => {
         if (findPO[0][`DATA`][i][`PO`] === input['PO']) {
           dbsap = findPO[0][`DATA`][i];
           // break;
-          cuslot = cuslot+ findPO[0][`DATA`][i][`CUSLOTNO`]+ ','
+          cuslot = cuslot + findPO[0][`DATA`][i][`CUSLOTNO`] + ','
         }
       }
 
@@ -168,60 +168,65 @@ router.post('/GETINtoTPGVCP002', async (req, res) => {
 
 
 
-          TPGVCP002db = {
-            "INS": NAME_INS,
-            "PO": input['PO'] || '',
-            "CP": input['CP'] || '',
-            "MATCP": input['CP'] || '',
-            "QTY": dbsap ['QUANTITY'] || '',
-            "PROCESS": dbsap ['PROCESS'] || '',
-            // "CUSLOT": dbsap ['CUSLOTNO'] || '',
-            "CUSLOT": cuslot,
-            "TPKLOT": dbsap ['FG_CHARG'] || '',
-            "FG": dbsap ['FG'] || '',
-            "CUSTOMER": dbsap ['CUSTOMER'] || '',
-            "PART": dbsap ['PART'] || '',
-            "PARTNAME": dbsap ['PARTNAME'] || '',
-            "MATERIAL": dbsap ['MATERIAL'] || '',
-            //---new
-            "QUANTITY": dbsap ['QUANTITY'] || '',
-            // "PROCESS":dbsap ['PROCESS'] || '',
-            // "CUSLOTNO": dbsap ['CUSLOTNO'] || '',
-            "CUSLOTNO":  cuslot,
-            "FG_CHARG": dbsap ['FG_CHARG'] || '',
-            "PARTNAME_PO": dbsap ['PARTNAME_PO'] || '',
-            "PART_PO": dbsap ['PART_PO'] || '',
-            "CUSTNAME": dbsap ['CUSTNAME'] || '',
-            //----------------------
-            "ItemPick": ItemPickoutP2, //---->
-            "ItemPickcode": ItemPickcodeoutP2, //---->
-            "POINTs": "",
-            "PCS": "",
-            "PCSleft": "",
-            "UNIT": "",
-            "INTERSEC": "",
-            "RESULTFORMAT": "",
-            "GRAPHTYPE": "",
-            "GAP": "",
-            "GAPname": '',
-            "GAPnameList": [],
-            "GAPnameListdata": ['', '', '', '', '', '', '', '', '', '', '', '', '', '', ''],
-            //----------------------
-            "preview": [],
-            "confirmdata": [],
-            "ITEMleftUNIT": [],
-            "ITEMleftVALUE": [],
-            //
-            "MeasurmentFOR": "FINAL",
-            "inspectionItem": "", //ITEMpice
-            "inspectionItemNAME": "",
-            "tool": NAME_INS,
-            "value": [],  //key: PO1: itemname ,PO2:V01,PO3: V02,PO4: V03,PO5:V04,P06:INS,P9:NO.,P10:TYPE, last alway mean P01:"MEAN",PO2:V01,PO3:V02-MEAN,PO4: V03,PO5:V04-MEAN
-            "dateupdatevalue": day,
-            "INTERSEC_ERR": 0,
-          }
+        TPGVCP002db = {
+          "INS": NAME_INS,
+          "PO": input['PO'] || '',
+          "CP": input['CP'] || '',
+          "MATCP": input['CP'] || '',
+          "QTY": dbsap['QUANTITY'] || '',
+          "PROCESS": dbsap['PROCESS'] || '',
+          // "CUSLOT": dbsap['CUSLOTNO'] || '',
+          "CUSLOT": cuslot,
+          "TPKLOT": dbsap['FG_CHARG'] || '',
+          "FG": dbsap['FG'] || '',
+          "CUSTOMER": dbsap['CUSTOMER'] || '',
+          "PART": findcp[0]['PART'] || '',
+          "PART_s": dbsap['PART'] || '',
+          "PARTNAME_s": dbsap['PARTNAME'] || '',
+          "PARTNAME": findcp[0]['PARTNAME'] || '',
+          "MATERIAL": findcp[0]['MATERIAL'] || '',
+          "MATERIAL_s": dbsap['MATERIAL'] || '',
+          //---new
+          "QUANTITY": dbsap['QUANTITY'] || '',
+          // "PROCESS":dbsap ['PROCESS'] || '',
+          // "CUSLOTNO": dbsap['CUSLOTNO'] || '',
+          "CUSLOTNO": cuslot,
+          "FG_CHARG": dbsap['FG_CHARG'] || '',
+          "PARTNAME_PO": dbsap['PARTNAME_PO'] || '',
+          "PART_PO": dbsap['PART_PO'] || '',
+          "CUSTNAME_s": dbsap['CUSTNAME'] || '',
+          "CUSTNAME": findcp[0]['CUST_FULLNM'] || '',
+          "UNITSAP": dbsap['UNIT'] || '',
+          //----------------------
+          "ItemPick": ItemPickoutP2, //---->
+          "ItemPickcode": ItemPickcodeoutP2, //---->
+          "POINTs": "",
+          "PCS": "",
+          "PCSleft": "",
+          "UNIT": "",
+          "INTERSEC": "",
+          "RESULTFORMAT": "",
+          "GRAPHTYPE": "",
+          "GAP": "",
+          "GAPname": '',
+          "GAPnameList": [],
+          "GAPnameListdata": ['', '', '', '', '', '', '', '', '', '', '', '', '', '', ''],
+          //----------------------
+          "preview": [],
+          "confirmdata": [],
+          "ITEMleftUNIT": [],
+          "ITEMleftVALUE": [],
+          //
+          "MeasurmentFOR": "FINAL",
+          "inspectionItem": "", //ITEMpice
+          "inspectionItemNAME": "",
+          "tool": NAME_INS,
+          "value": [],  //key: PO1: itemname ,PO2:V01,PO3: V02,PO4: V03,PO5:V04,P06:INS,P9:NO.,P10:TYPE, last alway mean P01:"MEAN",PO2:V01,PO3:V02-MEAN,PO4: V03,PO5:V04-MEAN
+          "dateupdatevalue": day,
+          "INTERSEC_ERR": 0,
+        }
 
-          output = 'OK';
+        output = 'OK';
 
 
       } else {
