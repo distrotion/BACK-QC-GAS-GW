@@ -765,12 +765,76 @@ router.post('/GASGWreport', async (req, res) => {
     // "FINAL_ANS" : { $exists : false },
   }
 
-  output = await mongodb.findproject(MAIN_DATA, MAIN, out,{"PO":1,"CP":1,"MATCP":1,"CUSTOMER":1,"PART":1,"PARTNAME":1,"MATERIAL":1,"CUSLOTNO":1});
+  output = await mongodb.findproject(MAIN_DATA, MAIN, out,{"PO":1,"CP":1,"MATCP":1,"CUSTOMER":1,"PART":1,"PARTNAME":1,"MATERIAL":1,"CUSLOTNO":1, "IDInspected": 1 , "IDCheck": 1 , "IDApprove": 1 });
   console.log(output)
 
 
   //-------------------------------------
   return res.json(output);
+});
+
+router.post('/Inspected-sign', async (req, res) => {
+  //-------------------------------------
+  console.log('--Inspected-sign--');
+  // console.log(req.body);
+  let input = req.body;
+  //-------------------------------------
+  let output = 'NOK'
+
+  if(input['ID'] != undefined && input['PO'] != undefined){
+    let sign = {
+      'dateInspected':`${Date.now()}`,
+      'IDInspected':input['ID'],
+    }
+    let upd = await mongodb.update(MAIN_DATA, MAIN, { "PO": input['PO'] }, { $set: sign });
+    output = 'OK'
+  }
+
+  //-------------------------------------
+  res.json(output);
+});
+
+
+router.post('/Check-sign', async (req, res) => {
+  //-------------------------------------
+  console.log('--Check-sign--');
+  // console.log(req.body);
+  let input = req.body;
+  //-------------------------------------
+  let output = 'NOK'
+
+  if(input['ID'] != undefined && input['PO'] != undefined){
+    let sign = {
+      'dateCheck':`${Date.now()}`,
+      'IDCheck':input['ID'],
+    }
+    let upd = await mongodb.update(MAIN_DATA, MAIN, { "PO": input['PO'] }, { $set: sign });
+    output = 'OK'
+  }
+
+  //-------------------------------------
+  res.json(output);
+});
+
+router.post('/Approve-sign', async (req, res) => {
+  //-------------------------------------
+  console.log('--Approve-sign--');
+  // console.log(req.body);
+  let input = req.body;
+  //-------------------------------------
+  let output = 'NOK'
+
+  if(input['ID'] != undefined && input['PO'] != undefined){
+    let sign = {
+      'dateApprove':`${Date.now()}`,
+      'IDApprove':input['ID'],
+    }
+    let upd = await mongodb.update(MAIN_DATA, MAIN, { "PO": input['PO'] }, { $set: sign });
+    output = 'OK'
+  }
+
+  //-------------------------------------
+  res.json(output);
 });
 
 //let objectR = Object.getOwnPropertyNames(input_S2_1)
